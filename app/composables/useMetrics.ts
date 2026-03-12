@@ -1,5 +1,16 @@
 import type { CharState } from './useTypingEngine'
 
+export interface TimeSeriesPoint {
+  time: number  // seconds since start
+  wpm: number
+  accuracy: number
+}
+
+export interface ErrorEvent {
+  time: number  // seconds since start
+  charIndex: number
+}
+
 export function useMetrics(
   startTime: Ref<number | null>,
   flatChars: Ref<CharState[]>,
@@ -14,18 +25,14 @@ export function useMetrics(
   const elapsedSeconds = ref(0)
   const errorCount = ref(0)
 
+  // Time-series data for the results chart
+  const timeSeries = ref<TimeSeriesPoint[]>([])
+  const errorEvents = ref<ErrorEvent[]>([])
+
   let intervalId: ReturnType<typeof setInterval> | null = null
+  let lastErrorCount = 0
 
-  function calculate() {
-    if (!startTime.value) return
-
-    const elapsed = (Date.now() - startTime.value) / 1000
-    if (elapsed <= 0) return
-
-    if (!finished.value) {
-      elapsedSeconds.value = elapsed
-    }
-
+  function getStats(elapsed: number) {
     const chars = flatChars.value
     let correctChars = 0
     let totalTyped = 0
@@ -41,13 +48,55 @@ export function useMetrics(
       }
     }
 
-    const t = finished.value ? elapsedSeconds.value : elapsed
+    const currentCpm = elapsed > 0 ? (correctChars / elapsed) * 60 : 0
+    const currentWpm = currentCpm / 5
+    const currentLpm = elapsed > 0 ? (completedNewlines / elapsed) * 60 : 0
+    const currentAcc = totalTyped > 0 ? (correctChars / totalTyped) * 100 : 100
 
-    cpm.value = t > 0 ? (correctChars / t) * 60 : 0
-    wpm.value = cpm.value / 5
-    lpm.value = t > 0 ? (completedNewlines / t) * 60 : 0
-    accuracy.value = totalTyped > 0 ? (correctChars / totalTyped) * 100 : 100
-    errorCount.value = errors.value.size
+    return { cpm: currentCpm, wpm: currentWpm, lpm: currentLpm, accuracy: currentAcc, errorCount: errors.value.size }
+  }
+
+  function calculate() {
+    if (!startTime.value) return
+
+    const elapsed = (Date.now() - startTime.value) / 1000
+    if (elapsed <= 0) return
+
+    if (!finished.value) {
+      elapsedSeconds.value = elapsed
+    }
+
+    const stats = getStats(finished.value ? elapsedSeconds.value : elapsed)
+
+    cpm.value = stats.cpm
+    wpm.value = stats.wpm
+    lpm.value = stats.lpm
+    accuracy.value = stats.accuracy
+    errorCount.value = stats.errorCount
+
+    // Record time-series sample (roughly every second — the interval is 250ms,
+    // so we sample when the integer second changes)
+    if (!finished.value) {
+      const currentSecond = Math.floor(elapsed)
+      const lastSample = timeSeries.value[timeSeries.value.length - 1]
+      if (!lastSample || Math.floor(lastSample.time) < currentSecond) {
+        timeSeries.value.push({
+          time: currentSecond,
+          wpm: stats.wpm,
+          accuracy: stats.accuracy
+        })
+      }
+
+      // Detect new errors since last check
+      const currentErrorCount = errors.value.size
+      if (currentErrorCount > lastErrorCount) {
+        errorEvents.value.push({
+          time: elapsed,
+          charIndex: cursorIndex.value
+        })
+      }
+      lastErrorCount = currentErrorCount
+    }
   }
 
   function startInterval() {
@@ -64,6 +113,10 @@ export function useMetrics(
 
   watch(startTime, (val) => {
     if (val !== null) {
+      // Reset time-series on new run
+      timeSeries.value = []
+      errorEvents.value = []
+      lastErrorCount = 0
       startInterval()
     } else {
       stopInterval()
@@ -73,6 +126,9 @@ export function useMetrics(
       accuracy.value = 100
       elapsedSeconds.value = 0
       errorCount.value = 0
+      timeSeries.value = []
+      errorEvents.value = []
+      lastErrorCount = 0
     }
   })
 
@@ -81,6 +137,13 @@ export function useMetrics(
       if (startTime.value) {
         elapsedSeconds.value = (Date.now() - startTime.value) / 1000
       }
+      // Record final data point
+      const stats = getStats(elapsedSeconds.value)
+      timeSeries.value.push({
+        time: Math.floor(elapsedSeconds.value),
+        wpm: stats.wpm,
+        accuracy: stats.accuracy
+      })
       calculate()
       stopInterval()
     }
@@ -96,6 +159,8 @@ export function useMetrics(
     lpm,
     accuracy,
     elapsedSeconds,
-    errorCount
+    errorCount,
+    timeSeries,
+    errorEvents
   }
 }

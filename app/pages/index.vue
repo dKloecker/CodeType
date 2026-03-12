@@ -27,7 +27,9 @@ const {
   lpm,
   accuracy,
   elapsedSeconds,
-  errorCount
+  errorCount,
+  timeSeries,
+  errorEvents
 } = useMetrics(startTime, flatChars, cursorIndex, finished, errors)
 
 const isActive = computed(() => startTime.value !== null)
@@ -107,7 +109,10 @@ watch([category, language, lineCount], () => {
         :accuracy="accuracy"
         :elapsed-seconds="elapsedSeconds"
         :error-count="errorCount"
-        @restart="refresh()"
+        :time-series="timeSeries"
+        :error-events="errorEvents"
+        @restart="reset()"
+        @next="refresh()"
       />
     </div>
 
