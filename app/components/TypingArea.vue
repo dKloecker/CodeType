@@ -102,7 +102,11 @@ const snippetCssVars = computed(() => ({
       @keydown="emit('keydown', $event)"
     >
 
-    <div v-if="loading" class="text-center py-12" style="color: var(--text-muted)">
+    <div
+      v-if="loading"
+      class="text-center py-12"
+      style="color: var(--text-muted)"
+    >
       loading snippet...
     </div>
 
@@ -116,14 +120,20 @@ const snippetCssVars = computed(() => ({
         class="leading-[1.8] text-[1.1rem] whitespace-pre-wrap break-all outline-none"
         :style="{ fontFamily: codeFontFamily }"
         @click="focusInput"
-      ><template v-for="(line, lineIdx) in getLines(flatChars)" :key="lineIdx"><template v-for="ch in line" :key="ch.index"><span
-            v-if="!ch.isNewline"
-            :class="charClass(ch)"
-            :style="charStyle(ch)"
-          >{{ ch.char }}</span><span
-            v-else
-            :class="charClass(ch)"
-          >{{ '\n' }}</span></template></template></pre>
+      ><template
+v-for="(line, lineIdx) in getLines(flatChars)"
+                 :key="lineIdx"
+><template
+v-for="ch in line"
+                                          :key="ch.index"
+><span
+                                            v-if="!ch.isNewline"
+                                            :class="charClass(ch)"
+                                            :style="charStyle(ch)"
+                                          >{{ ch.char }}</span><span
+                     v-else
+                     :class="charClass(ch)"
+      >{{ '\n' }}</span></template></template></pre>
     </div>
   </div>
 </template>

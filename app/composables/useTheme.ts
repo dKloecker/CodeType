@@ -9,7 +9,7 @@ export interface ThemeColors {
   cursorBg: string
 }
 
-export const themeOptions: { value: ThemeId; label: string }[] = [
+export const themeOptions: { value: ThemeId, label: string }[] = [
   { value: 'matrix', label: 'matrix' },
   { value: 'dracula', label: 'dracula' },
   { value: 'monokai', label: 'monokai' },
@@ -63,12 +63,12 @@ export const themeColorMap: Record<ThemeId, ThemeColors> = {
   }
 }
 
-export const fontOptions: { value: FontId; label: string; family: string }[] = [
-  { value: 'jetbrains', label: 'jetbrains', family: "'JetBrains Mono', monospace" },
-  { value: 'fira', label: 'fira code', family: "'Fira Code', monospace" },
-  { value: 'source', label: 'source code', family: "'Source Code Pro', monospace" },
-  { value: 'ibm', label: 'ibm plex', family: "'IBM Plex Mono', monospace" },
-  { value: 'roboto', label: 'roboto', family: "'Roboto Mono', monospace" }
+export const fontOptions: { value: FontId, label: string, family: string }[] = [
+  { value: 'jetbrains', label: 'jetbrains', family: '\'JetBrains Mono\', monospace' },
+  { value: 'fira', label: 'fira code', family: '\'Fira Code\', monospace' },
+  { value: 'source', label: 'source code', family: '\'Source Code Pro\', monospace' },
+  { value: 'ibm', label: 'ibm plex', family: '\'IBM Plex Mono\', monospace' },
+  { value: 'roboto', label: 'roboto', family: '\'Roboto Mono\', monospace' }
 ]
 
 export function useTheme() {
@@ -79,7 +79,7 @@ export function useTheme() {
 
   const codeFontFamily = computed(() => {
     const opt = fontOptions.find(o => o.value === font.value)
-    return opt?.family ?? "'JetBrains Mono', monospace"
+    return opt?.family ?? '\'JetBrains Mono\', monospace'
   })
 
   function applyTheme(t: ThemeId) {

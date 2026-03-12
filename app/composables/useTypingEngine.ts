@@ -49,7 +49,7 @@ async function tokenizeCode(code: string, language: string): Promise<CharState[]
 
 function buildCharStatesFromTokens(
   code: string,
-  tokenLines: { content: string; color?: string }[][]
+  tokenLines: { content: string, color?: string }[][]
 ): CharState[] {
   const defaultColor = '#d4d4d4'
   const codeLines = code.split('\n')
@@ -102,7 +102,7 @@ function buildCharStatesFromTokens(
 
 export function useTypingEngine(
   snippet: Ref<Snippet | null>,
-  indentConfig: { indentStyle: Ref<'tabs' | 'spaces'>; spacesPerTab: Ref<number> }
+  indentConfig: { indentStyle: Ref<'tabs' | 'spaces'>, spacesPerTab: Ref<number> }
 ) {
   const flatChars = ref<CharState[]>([])
   const cursorIndex = ref(0)

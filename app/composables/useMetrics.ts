@@ -1,13 +1,13 @@
 import type { CharState } from './useTypingEngine'
 
 export interface TimeSeriesPoint {
-  time: number  // seconds since start
+  time: number // seconds since start
   wpm: number
   accuracy: number
 }
 
 export interface ErrorEvent {
-  time: number  // seconds since start
+  time: number // seconds since start
   charIndex: number
 }
 

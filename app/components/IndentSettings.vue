@@ -20,18 +20,27 @@ const cursorStyles = ['line', 'underline', 'box'] as const
     style="background: var(--bg-overlay); border: 1px solid #333"
   >
     <div class="flex items-center justify-between mb-4">
-      <span class="text-sm" style="color: var(--text-muted)">settings</span>
+      <span
+        class="text-sm"
+        style="color: var(--text-muted)"
+      >settings</span>
       <button
         class="p-1 transition-opacity duration-200 hover:opacity-70"
         style="color: var(--text-muted)"
         @click="emit('update:open', false)"
       >
-        <UIcon name="i-lucide-x" class="w-4 h-4" />
+        <UIcon
+          name="i-lucide-x"
+          class="w-4 h-4"
+        />
       </button>
     </div>
 
     <div class="mb-3">
-      <label class="text-xs block mb-2" style="color: var(--text-muted)">indent style</label>
+      <label
+        class="text-xs block mb-2"
+        style="color: var(--text-muted)"
+      >indent style</label>
       <div class="flex gap-2">
         <button
           class="px-3 py-1 text-xs rounded transition-all duration-200"
@@ -58,8 +67,14 @@ const cursorStyles = ['line', 'underline', 'box'] as const
       </div>
     </div>
 
-    <div v-if="indentStyle === 'spaces'" class="mb-3">
-      <label class="text-xs block mb-2" style="color: var(--text-muted)">spaces per tab</label>
+    <div
+      v-if="indentStyle === 'spaces'"
+      class="mb-3"
+    >
+      <label
+        class="text-xs block mb-2"
+        style="color: var(--text-muted)"
+      >spaces per tab</label>
       <div class="flex gap-2">
         <button
           v-for="n in ([2, 4] as const)"
@@ -78,7 +93,10 @@ const cursorStyles = ['line', 'underline', 'box'] as const
     </div>
 
     <div>
-      <label class="text-xs block mb-2" style="color: var(--text-muted)">caret style</label>
+      <label
+        class="text-xs block mb-2"
+        style="color: var(--text-muted)"
+      >caret style</label>
       <div class="flex gap-2">
         <button
           v-for="style in cursorStyles"

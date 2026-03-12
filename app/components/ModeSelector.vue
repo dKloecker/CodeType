@@ -18,26 +18,26 @@ const languageOptions = [
   { value: '', label: 'random' },
   { value: 'python', label: 'python' },
   { value: 'typescript', label: 'typescript' },
-  { value: 'cpp', label: 'c++' },
+  { value: 'cpp', label: 'c++' }
 ]
 
 const contentOptions = [
   { value: 'algorithm', label: 'algorithms' },
   { value: 'leetcode', label: 'leetcode' },
-  { value: 'oss', label: 'open source' },
+  { value: 'oss', label: 'open source' }
 ]
 
 const sizeOptions = [
   { value: 5, label: '5' },
   { value: 10, label: '10' },
   { value: 20, label: '20' },
-  { value: 50, label: '50' },
+  { value: 50, label: '50' }
 ]
 
-const cursorOptions: { value: CursorStyle; label: string }[] = [
+const cursorOptions: { value: CursorStyle, label: string }[] = [
   { value: 'block', label: 'block' },
   { value: 'line', label: 'line' },
-  { value: 'underlined', label: 'under' },
+  { value: 'underlined', label: 'under' }
 ]
 
 const timedDurations = [10, 30, 60] as const
@@ -67,7 +67,6 @@ function setFont(f: FontId) {
   applyFont(f)
 }
 
-
 const containerRef = ref<HTMLElement | null>(null)
 
 function onClickOutside(e: MouseEvent) {
@@ -96,7 +95,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         :style="{ color: isActive('language') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('language')"
       >
-        <UIcon name="i-lucide-code-2" class="w-3.5 h-3.5 shrink-0" />
+        <UIcon
+          name="i-lucide-code-2"
+          class="w-3.5 h-3.5 shrink-0"
+        />
         <span>{{ languageOptions.find(o => o.value === language)?.label ?? 'random' }}</span>
       </button>
 
@@ -127,7 +129,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         :style="{ color: isActive('content') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('content')"
       >
-        <UIcon name="i-lucide-layers" class="w-3.5 h-3.5 shrink-0" />
+        <UIcon
+          name="i-lucide-layers"
+          class="w-3.5 h-3.5 shrink-0"
+        />
         <span>{{ contentOptions.find(o => o.value === category)?.label ?? category }}</span>
       </button>
 
@@ -158,7 +163,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         :style="{ color: isActive('size') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('size')"
       >
-        <UIcon name="i-lucide-ruler" class="w-3.5 h-3.5 shrink-0" />
+        <UIcon
+          name="i-lucide-ruler"
+          class="w-3.5 h-3.5 shrink-0"
+        />
         <span>{{ lineCount }}</span>
       </button>
 
@@ -189,7 +197,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         :style="{ color: isActive('mode') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('mode')"
       >
-        <UIcon name="i-lucide-timer" class="w-3.5 h-3.5 shrink-0" />
+        <UIcon
+          name="i-lucide-timer"
+          class="w-3.5 h-3.5 shrink-0"
+        />
         <span>{{ mode === 'until-finished' ? 'finished' : (timedDuration === 60 ? '1m' : `${timedDuration}s`) }}</span>
       </button>
 
@@ -227,7 +238,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         :style="{ color: isActive('settings') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('settings')"
       >
-        <UIcon name="i-lucide-settings" class="w-3.5 h-3.5 shrink-0" />
+        <UIcon
+          name="i-lucide-settings"
+          class="w-3.5 h-3.5 shrink-0"
+        />
       </button>
     </div>
 
@@ -240,7 +254,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
       >
         <!-- Cursor row -->
         <div class="flex items-center gap-3">
-          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">cursor</span>
+          <span
+            class="text-[11px] w-12 shrink-0"
+            style="color: var(--text-muted)"
+          >cursor</span>
           <div class="flex items-center gap-0.5">
             <button
               v-for="opt in cursorOptions"
@@ -255,7 +272,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         </div>
         <!-- Indent row -->
         <div class="flex items-center gap-3">
-          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">indent</span>
+          <span
+            class="text-[11px] w-12 shrink-0"
+            style="color: var(--text-muted)"
+          >indent</span>
           <div class="flex items-center gap-0.5">
             <button
               class="px-2.5 py-1 rounded-md transition-colors duration-150"
@@ -282,7 +302,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         </div>
         <!-- Font row -->
         <div class="flex items-center gap-3">
-          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">font</span>
+          <span
+            class="text-[11px] w-12 shrink-0"
+            style="color: var(--text-muted)"
+          >font</span>
           <div class="flex items-center gap-0.5 flex-wrap">
             <button
               v-for="opt in fontOptions"
@@ -297,7 +320,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
         </div>
         <!-- Theme row -->
         <div class="flex items-center gap-3">
-          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">theme</span>
+          <span
+            class="text-[11px] w-12 shrink-0"
+            style="color: var(--text-muted)"
+          >theme</span>
           <div class="flex items-center gap-0.5 flex-wrap">
             <button
               v-for="opt in themeOptions"

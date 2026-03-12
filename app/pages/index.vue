@@ -127,7 +127,10 @@ watch([category, language, lineCount], () => {
       :remaining-seconds="remainingSeconds"
     />
 
-    <footer class="text-center py-3 text-xs" style="color: var(--text-muted)">
+    <footer
+      class="text-center py-3 text-xs"
+      style="color: var(--text-muted)"
+    >
       tab + enter — restart &nbsp;&bull;&nbsp; esc — reset
     </footer>
   </div>

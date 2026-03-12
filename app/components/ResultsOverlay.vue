@@ -17,12 +17,6 @@ const emit = defineEmits<{
   next: []
 }>()
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
-
 // ── Tab+Enter restart ──
 let tabPressed = false
 
@@ -94,14 +88,14 @@ const chartData = computed(() => {
   }))
 
   // Y axis ticks for WPM (left side)
-  const wpmTicks: { y: number; label: string }[] = []
+  const wpmTicks: { y: number, label: string }[] = []
   const tickStep = wpmCeil <= 40 ? 10 : 20
   for (let v = 0; v <= wpmCeil; v += tickStep) {
     wpmTicks.push({ y: yWpm(v), label: String(v) })
   }
 
   // X axis ticks
-  const xTicks: { x: number; label: string }[] = []
+  const xTicks: { x: number, label: string }[] = []
   const timeStep = maxTime <= 10 ? 1 : maxTime <= 30 ? 5 : 10
   for (let t = 0; t <= maxTime; t += timeStep) {
     xTicks.push({ x: xPos(t), label: String(t) })
@@ -127,7 +121,7 @@ const chartData = computed(() => {
 })
 
 // Build a smooth catmull-rom-like SVG path
-function buildSmoothPath(points: { x: number; y: number }[]): string {
+function buildSmoothPath(points: { x: number, y: number }[]): string {
   if (points.length === 0) return ''
   if (points.length === 1) return `M ${points[0]!.x} ${points[0]!.y}`
 
@@ -187,12 +181,28 @@ const consistency = computed(() => {
       <div class="flex items-start gap-12 mb-6">
         <!-- Left stats column -->
         <div class="shrink-0">
-          <div class="text-xs mb-1" style="color: var(--text-muted)">wpm</div>
-          <div class="text-5xl font-light leading-none mb-4" style="color: var(--accent-primary)">
+          <div
+            class="text-xs mb-1"
+            style="color: var(--text-muted)"
+          >
+            wpm
+          </div>
+          <div
+            class="text-5xl font-light leading-none mb-4"
+            style="color: var(--accent-primary)"
+          >
             {{ Math.round(wpm) }}
           </div>
-          <div class="text-xs mb-1" style="color: var(--text-muted)">acc</div>
-          <div class="text-5xl font-light leading-none" style="color: var(--accent-primary)">
+          <div
+            class="text-xs mb-1"
+            style="color: var(--text-muted)"
+          >
+            acc
+          </div>
+          <div
+            class="text-5xl font-light leading-none"
+            style="color: var(--accent-primary)"
+          >
             {{ Math.round(accuracy) }}%
           </div>
         </div>
@@ -339,24 +349,74 @@ const consistency = computed(() => {
       <!-- ═══ Stats row (below chart) ═══ -->
       <div class="flex items-start justify-between gap-6 mb-8 px-1">
         <div>
-          <div class="text-xs mb-0.5" style="color: var(--text-muted)">test type</div>
-          <div class="text-sm font-medium" style="color: var(--text-primary)">code snippet</div>
+          <div
+            class="text-xs mb-0.5"
+            style="color: var(--text-muted)"
+          >
+            test type
+          </div>
+          <div
+            class="text-sm font-medium"
+            style="color: var(--text-primary)"
+          >
+            code snippet
+          </div>
         </div>
         <div class="text-center">
-          <div class="text-xs mb-0.5" style="color: var(--text-muted)">raw</div>
-          <div class="text-2xl font-light" style="color: var(--text-primary)">{{ Math.round(cpm / 5) }}</div>
+          <div
+            class="text-xs mb-0.5"
+            style="color: var(--text-muted)"
+          >
+            raw
+          </div>
+          <div
+            class="text-2xl font-light"
+            style="color: var(--text-primary)"
+          >
+            {{ Math.round(cpm / 5) }}
+          </div>
         </div>
         <div class="text-center">
-          <div class="text-xs mb-0.5" style="color: var(--text-muted)">characters</div>
-          <div class="text-2xl font-light" style="color: var(--text-primary)">{{ charBreakdown }}</div>
+          <div
+            class="text-xs mb-0.5"
+            style="color: var(--text-muted)"
+          >
+            characters
+          </div>
+          <div
+            class="text-2xl font-light"
+            style="color: var(--text-primary)"
+          >
+            {{ charBreakdown }}
+          </div>
         </div>
         <div class="text-center">
-          <div class="text-xs mb-0.5" style="color: var(--text-muted)">consistency</div>
-          <div class="text-2xl font-light" style="color: var(--text-primary)">{{ consistency }}%</div>
+          <div
+            class="text-xs mb-0.5"
+            style="color: var(--text-muted)"
+          >
+            consistency
+          </div>
+          <div
+            class="text-2xl font-light"
+            style="color: var(--text-primary)"
+          >
+            {{ consistency }}%
+          </div>
         </div>
         <div class="text-center">
-          <div class="text-xs mb-0.5" style="color: var(--text-muted)">time</div>
-          <div class="text-2xl font-light" style="color: var(--text-primary)">{{ Math.round(elapsedSeconds) }}s</div>
+          <div
+            class="text-xs mb-0.5"
+            style="color: var(--text-muted)"
+          >
+            time
+          </div>
+          <div
+            class="text-2xl font-light"
+            style="color: var(--text-primary)"
+          >
+            {{ Math.round(elapsedSeconds) }}s
+          </div>
         </div>
       </div>
 
@@ -368,7 +428,10 @@ const consistency = computed(() => {
           title="Next test"
           @click="emit('next')"
         >
-          <UIcon name="i-lucide-chevron-right" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-chevron-right"
+            class="w-5 h-5"
+          />
         </button>
         <button
           class="action-icon"
@@ -376,35 +439,50 @@ const consistency = computed(() => {
           title="Redo"
           @click="emit('restart')"
         >
-          <UIcon name="i-lucide-rotate-ccw" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-rotate-ccw"
+            class="w-5 h-5"
+          />
         </button>
         <button
           class="action-icon"
           style="color: var(--text-muted)"
           title="Practice errors"
         >
-          <UIcon name="i-lucide-triangle-alert" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-triangle-alert"
+            class="w-5 h-5"
+          />
         </button>
         <button
           class="action-icon"
           style="color: var(--text-muted)"
           title="Toggle line chart"
         >
-          <UIcon name="i-lucide-align-justify" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-align-justify"
+            class="w-5 h-5"
+          />
         </button>
         <button
           class="action-icon"
           style="color: var(--text-muted)"
           title="Rewind"
         >
-          <UIcon name="i-lucide-rewind" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-rewind"
+            class="w-5 h-5"
+          />
         </button>
         <button
           class="action-icon"
           style="color: var(--text-muted)"
           title="Share / export"
         >
-          <UIcon name="i-lucide-download" class="w-5 h-5" />
+          <UIcon
+            name="i-lucide-download"
+            class="w-5 h-5"
+          />
         </button>
       </div>
     </div>

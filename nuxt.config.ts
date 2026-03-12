@@ -9,8 +9,6 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  css: ['~/assets/css/main.css'],
-
   app: {
     head: {
       title: 'CodeType',
@@ -31,6 +29,8 @@ export default defineNuxtConfig({
       ]
     }
   },
+
+  css: ['~/assets/css/main.css'],
 
   routeRules: {},
 
