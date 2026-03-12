@@ -13,6 +13,8 @@ const emit = defineEmits<{
   keydown: [event: KeyboardEvent]
 }>()
 
+const { codeColors, codeFontFamily } = useTheme()
+
 const inputRef = ref<HTMLInputElement | null>(null)
 const scrollContainer = ref<HTMLElement | null>(null)
 
@@ -60,6 +62,31 @@ function charClass(ch: CharState): string {
   }
   return base
 }
+
+// Compute inline style for each char, using the snippet theme for error/cursor colors
+function charStyle(ch: CharState): Record<string, string> {
+  if (ch.status === 'incorrect') {
+    return {
+      color: codeColors.value.error,
+      textDecorationColor: codeColors.value.error
+    }
+  }
+  if (ch.status === 'cursor') {
+    return {
+      color: ch.color || codeColors.value.text,
+      background: codeColors.value.cursorBg
+    }
+  }
+  // correct or untyped — use the syntax color from the snippet, or the theme text color
+  return {
+    color: ch.color || codeColors.value.text
+  }
+}
+
+const snippetCssVars = computed(() => ({
+  '--snippet-cursor': codeColors.value.cursor,
+  '--snippet-error': codeColors.value.error
+}))
 </script>
 
 <template>
@@ -83,16 +110,16 @@ function charClass(ch: CharState): string {
       v-else
       ref="scrollContainer"
       class="typing-scroll max-h-[60vh] overflow-y-auto"
+      :style="snippetCssVars"
     >
       <pre
-        class="font-mono leading-[1.8] text-[1.1rem] whitespace-pre-wrap break-all outline-none"
+        class="leading-[1.8] text-[1.1rem] whitespace-pre-wrap break-all outline-none"
+        :style="{ fontFamily: codeFontFamily }"
         @click="focusInput"
       ><template v-for="(line, lineIdx) in getLines(flatChars)" :key="lineIdx"><template v-for="ch in line" :key="ch.index"><span
             v-if="!ch.isNewline"
             :class="charClass(ch)"
-            :style="ch.status === 'incorrect'
-              ? { color: 'var(--error-color)' }
-              : { color: ch.color }"
+            :style="charStyle(ch)"
           >{{ ch.char }}</span><span
             v-else
             :class="charClass(ch)"

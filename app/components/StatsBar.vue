@@ -21,28 +21,28 @@ function formatTime(seconds: number): string {
   <div
     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center gap-6 text-sm rounded-full px-6 py-3 transition-opacity duration-200"
     :class="active ? 'stats-active' : 'stats-idle'"
-    style="background: rgba(34, 34, 34, 0.85); backdrop-filter: blur(8px); border: 1px solid #333"
+    style="background: var(--bg-surface); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.06)"
   >
     <div>
       <span style="color: var(--text-muted)">LPM: </span>
       <span style="color: var(--text-primary)">{{ lpm.toFixed(1) }}</span>
     </div>
-    <span style="color: #333">|</span>
+    <span style="color: rgba(255,255,255,0.08)">|</span>
     <div>
       <span style="color: var(--text-muted)">WPM: </span>
       <span style="color: var(--text-primary)">{{ Math.round(wpm) }}</span>
     </div>
-    <span style="color: #333">|</span>
+    <span style="color: rgba(255,255,255,0.08)">|</span>
     <div>
       <span style="color: var(--text-muted)">CPM: </span>
       <span style="color: var(--text-primary)">{{ Math.round(cpm) }}</span>
     </div>
-    <span style="color: #333">|</span>
+    <span style="color: rgba(255,255,255,0.08)">|</span>
     <div>
       <span style="color: var(--text-muted)">ACC: </span>
       <span style="color: var(--text-primary)">{{ accuracy.toFixed(1) }}%</span>
     </div>
-    <span style="color: #333">|</span>
+    <span style="color: rgba(255,255,255,0.08)">|</span>
     <div v-if="props.mode === 'timed'">
       <span style="color: var(--text-muted)">LEFT: </span>
       <span

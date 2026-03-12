@@ -90,7 +90,7 @@ watch([category, language, lineCount], () => {
       v-model:cursor-style="cursorStyle"
     />
 
-    <div class="flex-1 flex flex-col items-center justify-center relative pt-16">
+    <div class="flex-1 flex flex-col items-center justify-center relative">
       <TypingArea
         :flat-chars="flatChars"
         :cursor-index="cursorIndex"

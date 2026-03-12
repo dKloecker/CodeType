@@ -44,10 +44,13 @@ export default defineEventHandler(async (event) => {
   }
 
   if (lines) {
-    const withinLimit = snippets.filter(s => s.lines <= lines)
-    if (withinLimit.length > 0) {
-      snippets = withinLimit
-    }
+    // Find snippets closest to the requested line count
+    const sorted = [...snippets].sort(
+      (a, b) => Math.abs(a.lines - lines) - Math.abs(b.lines - lines)
+    )
+    const closestDistance = Math.abs(sorted[0]!.lines - lines)
+    // Keep all snippets tied for closest match
+    snippets = sorted.filter(s => Math.abs(s.lines - lines) === closestDistance)
   }
 
   const randomIndex = Math.floor(Math.random() * snippets.length)

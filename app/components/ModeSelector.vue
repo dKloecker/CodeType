@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import type { CursorStyle } from '~/composables/useCursorConfig'
-
-interface CategorySection {
-  key: string
-  icon: string
-  label: string
-  showCurrentValue: boolean
-  exclusive: boolean
-}
+import type { ThemeId, FontId } from '~/composables/useTheme'
+import { themeOptions, fontOptions } from '~/composables/useTheme'
 
 const language = defineModel<string>('language', { default: '' })
 const category = defineModel<string>('category', { default: 'algorithm' })
@@ -18,13 +12,7 @@ const indentStyle = defineModel<'tabs' | 'spaces'>('indentStyle', { default: 'sp
 const spacesPerTab = defineModel<2 | 4>('spacesPerTab', { default: 4 })
 const cursorStyle = defineModel<CursorStyle>('cursorStyle', { default: 'line' })
 
-const categories: CategorySection[] = [
-  { key: 'language', icon: 'i-lucide-code-2', label: 'language', showCurrentValue: true, exclusive: false },
-  { key: 'content', icon: 'i-lucide-layers', label: 'content', showCurrentValue: true, exclusive: false },
-  { key: 'size', icon: 'i-lucide-ruler', label: 'size', showCurrentValue: true, exclusive: false },
-  { key: 'mode', icon: 'i-lucide-timer', label: 'mode', showCurrentValue: true, exclusive: false },
-  { key: 'settings', icon: 'i-lucide-sliders-horizontal', label: 'settings', showCurrentValue: false, exclusive: true },
-]
+const { theme, font, applyTheme, applyFont } = useTheme()
 
 const languageOptions = [
   { value: '', label: 'random' },
@@ -40,78 +28,50 @@ const contentOptions = [
 ]
 
 const sizeOptions = [
-  { value: 1, label: '1 liner' },
-  { value: 5, label: '5 lines' },
-  { value: 10, label: '10 lines' },
-  { value: 20, label: '20 lines' },
-  { value: 50, label: '50 lines' },
+  { value: 5, label: '5' },
+  { value: 10, label: '10' },
+  { value: 20, label: '20' },
+  { value: 50, label: '50' },
 ]
 
 const cursorOptions: { value: CursorStyle; label: string }[] = [
   { value: 'block', label: 'block' },
   { value: 'line', label: 'line' },
-  { value: 'underlined', label: 'underlined' },
+  { value: 'underlined', label: 'under' },
 ]
 
 const timedDurations = [10, 30, 60] as const
 
-const openSections = ref(new Set<string>())
+type SectionKey = 'language' | 'content' | 'size' | 'mode' | 'settings'
 
-const hasOpenSections = computed(() => openSections.value.size > 0)
+const activeSection = ref<SectionKey | null>(null)
 
-function isOpen(key: string) {
-  return openSections.value.has(key)
+function toggle(key: SectionKey) {
+  activeSection.value = activeSection.value === key ? null : key
 }
 
-function toggle(section: CategorySection) {
-  if (openSections.value.has(section.key)) {
-    const next = new Set(openSections.value)
-    next.delete(section.key)
-    openSections.value = next
-  } else if (section.exclusive) {
-    openSections.value = new Set([section.key])
-  } else {
-    openSections.value = new Set([...openSections.value, section.key])
-  }
+function isActive(key: SectionKey) {
+  return activeSection.value === key
 }
 
-function closeSection(key: string) {
-  const next = new Set(openSections.value)
-  next.delete(key)
-  openSections.value = next
+function setMode(m: 'until-finished' | 'timed', dur?: 10 | 30 | 60) {
+  mode.value = m
+  if (dur) timedDuration.value = dur
 }
 
-function currentValue(key: string): string {
-  switch (key) {
-    case 'language':
-      return languageOptions.find(o => o.value === language.value)?.label ?? 'random'
-    case 'content':
-      return contentOptions.find(o => o.value === category.value)?.label ?? category.value
-    case 'size':
-      return sizeOptions.find(o => o.value === lineCount.value)?.label ?? `${lineCount.value}`
-    case 'mode':
-      if (mode.value === 'until-finished') return 'finished'
-      return timedDuration.value === 60 ? '1m' : `${timedDuration.value}s`
-    default:
-      return ''
-  }
+function setTheme(t: ThemeId) {
+  applyTheme(t)
 }
 
-function isModeActive(isUntilFinished: boolean, dur?: number) {
-  if (isUntilFinished) return mode.value === 'until-finished'
-  return mode.value === 'timed' && timedDuration.value === dur
-}
-
-function isIndentActive(style: 'tabs' | 'spaces', spaces?: number) {
-  if (style === 'tabs') return indentStyle.value === 'tabs'
-  return indentStyle.value === 'spaces' && spacesPerTab.value === spaces
+function setFont(f: FontId) {
+  applyFont(f)
 }
 
 const containerRef = ref<HTMLElement | null>(null)
 
 function onClickOutside(e: MouseEvent) {
   if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    openSections.value = new Set()
+    activeSection.value = null
   }
 }
 
@@ -122,236 +82,298 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
 <template>
   <div
     ref="containerRef"
-    class="fixed top-6 left-1/2 -translate-x-1/2 z-30"
+    class="flex flex-col items-center w-full pt-4 pb-2 z-30 relative"
   >
-    <!-- Pill row -->
+    <!-- The pill bar -->
     <div
-      class="flex items-center gap-0.5 rounded-full px-4 py-2 text-sm"
-      style="background: rgba(34, 34, 34, 0.85); backdrop-filter: blur(8px); border: 1px solid #333"
+      class="mode-pill inline-flex items-center rounded-[10px] text-[13px] overflow-hidden"
+      style="background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.06)"
     >
-      <template
-        v-for="(cat, i) in categories"
-        :key="cat.key"
+      <!-- ═══ Language ═══ -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        :style="{ color: isActive('language') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('language')"
       >
-        <span
-          v-if="i > 0"
-          class="px-1"
-          style="color: #444"
-        >|</span>
-        <button
-          class="flex items-center gap-1.5 px-2 py-0.5 transition-colors duration-200"
-          :style="{ color: isOpen(cat.key) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-          @click="toggle(cat)"
-        >
-          <UIcon
-            :name="cat.icon"
-            class="w-3.5 h-3.5 shrink-0"
-          />
-          <span>{{ cat.label }}</span>
-          <span
-            v-if="cat.showCurrentValue"
-            class="ml-0.5"
-            style="color: var(--accent-primary)"
-          >{{ currentValue(cat.key) }}</span>
-        </button>
-      </template>
+        <UIcon name="i-lucide-code-2" class="w-3.5 h-3.5 shrink-0" />
+        <span>{{ languageOptions.find(o => o.value === language)?.label ?? 'random' }}</span>
+      </button>
+
+      <!-- Language expanded inline -->
+      <div
+        class="pill-expand"
+        :class="{ 'pill-expand--open': isActive('language') }"
+      >
+        <div class="pill-expand-inner flex items-center">
+          <span class="pill-sep">|</span>
+          <button
+            v-for="opt in languageOptions"
+            :key="opt.value"
+            class="pill-option"
+            :style="{ color: language === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="language = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+      </div>
+
+      <span class="pill-sep">|</span>
+
+      <!-- ═══ Content ═══ -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        :style="{ color: isActive('content') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('content')"
+      >
+        <UIcon name="i-lucide-layers" class="w-3.5 h-3.5 shrink-0" />
+        <span>{{ contentOptions.find(o => o.value === category)?.label ?? category }}</span>
+      </button>
+
+      <!-- Content expanded inline -->
+      <div
+        class="pill-expand"
+        :class="{ 'pill-expand--open': isActive('content') }"
+      >
+        <div class="pill-expand-inner flex items-center">
+          <span class="pill-sep">|</span>
+          <button
+            v-for="opt in contentOptions"
+            :key="opt.value"
+            class="pill-option"
+            :style="{ color: category === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="category = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+      </div>
+
+      <span class="pill-sep">|</span>
+
+      <!-- ═══ Size ═══ -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        :style="{ color: isActive('size') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('size')"
+      >
+        <UIcon name="i-lucide-ruler" class="w-3.5 h-3.5 shrink-0" />
+        <span>{{ lineCount }}</span>
+      </button>
+
+      <!-- Size expanded inline -->
+      <div
+        class="pill-expand"
+        :class="{ 'pill-expand--open': isActive('size') }"
+      >
+        <div class="pill-expand-inner flex items-center">
+          <span class="pill-sep">|</span>
+          <button
+            v-for="opt in sizeOptions"
+            :key="opt.value"
+            class="pill-option"
+            :style="{ color: lineCount === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="lineCount = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+      </div>
+
+      <span class="pill-sep">|</span>
+
+      <!-- ═══ Mode ═══ -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        :style="{ color: isActive('mode') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('mode')"
+      >
+        <UIcon name="i-lucide-timer" class="w-3.5 h-3.5 shrink-0" />
+        <span>{{ mode === 'until-finished' ? 'finished' : (timedDuration === 60 ? '1m' : `${timedDuration}s`) }}</span>
+      </button>
+
+      <!-- Mode expanded inline -->
+      <div
+        class="pill-expand"
+        :class="{ 'pill-expand--open': isActive('mode') }"
+      >
+        <div class="pill-expand-inner flex items-center">
+          <span class="pill-sep">|</span>
+          <button
+            class="pill-option"
+            :style="{ color: mode === 'until-finished' ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="setMode('until-finished')"
+          >
+            finished
+          </button>
+          <button
+            v-for="dur in timedDurations"
+            :key="dur"
+            class="pill-option"
+            :style="{ color: (mode === 'timed' && timedDuration === dur) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="setMode('timed', dur)"
+          >
+            {{ dur === 60 ? '1m' : `${dur}s` }}
+          </button>
+        </div>
+      </div>
+
+      <span class="pill-sep">|</span>
+
+      <!-- ═══ Settings gear ═══ -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        :style="{ color: isActive('settings') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('settings')"
+      >
+        <UIcon name="i-lucide-settings" class="w-3.5 h-3.5 shrink-0" />
+      </button>
     </div>
 
-    <!-- Dropdown panel -->
-    <Transition name="dropdown">
+    <!-- Settings dropdown panel (only this one stays as a panel below) -->
+    <Transition name="panel">
       <div
-        v-if="hasOpenSections"
-        class="absolute top-full left-1/2 -translate-x-1/2 mt-2 rounded-xl px-5 py-3 min-w-max"
-        style="background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(8px); border: 1px solid #333"
+        v-if="activeSection === 'settings'"
+        class="mt-2 inline-flex flex-col gap-2 rounded-[10px] px-3 py-3 text-[13px]"
+        style="background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.06)"
       >
-        <!-- Language section -->
-        <Transition name="section">
-          <div
-            v-if="isOpen('language')"
-            class="flex items-center gap-3 py-1"
-          >
-            <span
-              class="text-xs w-16 shrink-0"
-              style="color: var(--text-muted)"
-            >language</span>
-            <div class="flex items-center gap-1">
-              <button
-                v-for="opt in languageOptions"
-                :key="opt.value"
-                class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                :style="{ color: language === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                @click="language = opt.value; closeSection('language')"
-              >
-                {{ opt.label }}
-              </button>
-            </div>
+        <!-- Cursor row -->
+        <div class="flex items-center gap-3">
+          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">cursor</span>
+          <div class="flex items-center gap-0.5">
+            <button
+              v-for="opt in cursorOptions"
+              :key="opt.value"
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: cursorStyle === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="cursorStyle = opt.value"
+            >
+              {{ opt.label }}
+            </button>
           </div>
-        </Transition>
-
-        <!-- Content section -->
-        <Transition name="section">
-          <div
-            v-if="isOpen('content')"
-            class="flex items-center gap-3 py-1"
-          >
-            <span
-              class="text-xs w-16 shrink-0"
-              style="color: var(--text-muted)"
-            >content</span>
-            <div class="flex items-center gap-1">
-              <button
-                v-for="opt in contentOptions"
-                :key="opt.value"
-                class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                :style="{ color: category === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                @click="category = opt.value; closeSection('content')"
-              >
-                {{ opt.label }}
-              </button>
-            </div>
+        </div>
+        <!-- Indent row -->
+        <div class="flex items-center gap-3">
+          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">indent</span>
+          <div class="flex items-center gap-0.5">
+            <button
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: indentStyle === 'tabs' ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="indentStyle = 'tabs'"
+            >
+              tab
+            </button>
+            <button
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: (indentStyle === 'spaces' && spacesPerTab === 2) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="indentStyle = 'spaces'; spacesPerTab = 2"
+            >
+              2sp
+            </button>
+            <button
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: (indentStyle === 'spaces' && spacesPerTab === 4) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="indentStyle = 'spaces'; spacesPerTab = 4"
+            >
+              4sp
+            </button>
           </div>
-        </Transition>
-
-        <!-- Size section -->
-        <Transition name="section">
-          <div
-            v-if="isOpen('size')"
-            class="flex items-center gap-3 py-1"
-          >
-            <span
-              class="text-xs w-16 shrink-0"
-              style="color: var(--text-muted)"
-            >size</span>
-            <div class="flex items-center gap-1">
-              <button
-                v-for="opt in sizeOptions"
-                :key="opt.value"
-                class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                :style="{ color: lineCount === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                @click="lineCount = opt.value; closeSection('size')"
-              >
-                {{ opt.label }}
-              </button>
-            </div>
+        </div>
+        <!-- Font row -->
+        <div class="flex items-center gap-3">
+          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">font</span>
+          <div class="flex items-center gap-0.5 flex-wrap">
+            <button
+              v-for="opt in fontOptions"
+              :key="opt.value"
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: font === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="setFont(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
           </div>
-        </Transition>
-
-        <!-- Mode section -->
-        <Transition name="section">
-          <div
-            v-if="isOpen('mode')"
-            class="flex items-center gap-3 py-1"
-          >
-            <span
-              class="text-xs w-16 shrink-0"
-              style="color: var(--text-muted)"
-            >mode</span>
-            <div class="flex items-center gap-1">
-              <button
-                class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                :style="{ color: isModeActive(true) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                @click="mode = 'until-finished'; closeSection('mode')"
-              >
-                until finished
-              </button>
-              <button
-                v-for="dur in timedDurations"
-                :key="dur"
-                class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                :style="{ color: isModeActive(false, dur) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                @click="mode = 'timed'; timedDuration = dur; closeSection('mode')"
-              >
-                {{ dur === 60 ? '1m' : `${dur}s` }}
-              </button>
-            </div>
+        </div>
+        <!-- Theme row -->
+        <div class="flex items-center gap-3">
+          <span class="text-[11px] w-12 shrink-0" style="color: var(--text-muted)">theme</span>
+          <div class="flex items-center gap-0.5 flex-wrap">
+            <button
+              v-for="opt in themeOptions"
+              :key="opt.value"
+              class="px-2.5 py-1 rounded-md transition-colors duration-150"
+              :style="{ color: theme === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="setTheme(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
           </div>
-        </Transition>
-
-        <!-- Settings sub-sections -->
-        <Transition name="section">
-          <div
-            v-if="isOpen('settings')"
-            class="flex flex-col"
-          >
-            <div class="flex items-center gap-3 py-1">
-              <span
-                class="text-xs w-16 shrink-0"
-                style="color: var(--text-muted)"
-              >cursor</span>
-              <div class="flex items-center gap-1">
-                <button
-                  v-for="opt in cursorOptions"
-                  :key="opt.value"
-                  class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                  :style="{ color: cursorStyle === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                  @click="cursorStyle = opt.value"
-                >
-                  {{ opt.label }}
-                </button>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 py-1">
-              <span
-                class="text-xs w-16 shrink-0"
-                style="color: var(--text-muted)"
-              >indent</span>
-              <div class="flex items-center gap-1">
-                <button
-                  class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                  :style="{ color: isIndentActive('tabs') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                  @click="indentStyle = 'tabs'"
-                >
-                  tab
-                </button>
-                <button
-                  class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                  :style="{ color: isIndentActive('spaces', 2) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                  @click="indentStyle = 'spaces'; spacesPerTab = 2"
-                >
-                  2 spaces
-                </button>
-                <button
-                  class="px-2 py-0.5 text-xs rounded transition-colors duration-150"
-                  :style="{ color: isIndentActive('spaces', 4) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-                  @click="indentStyle = 'spaces'; spacesPerTab = 4"
-                >
-                  4 spaces
-                </button>
-              </div>
-            </div>
-          </div>
-        </Transition>
+        </div>
       </div>
     </Transition>
   </div>
 </template>
 
 <style>
-.dropdown-enter-from,
-.dropdown-leave-to {
+/* ── Pill buttons ── */
+.pill-btn {
+  transition: color 150ms ease;
+  white-space: nowrap;
+}
+
+.pill-btn:hover {
+  filter: brightness(1.2);
+}
+
+/* ── Separators ── */
+.pill-sep {
+  color: rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* ── Inline option buttons ── */
+.pill-option {
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 150ms ease;
+  white-space: nowrap;
+}
+
+.pill-option:hover {
+  filter: brightness(1.2);
+}
+
+/* ── Expandable section (the magic) ── */
+.pill-expand {
+  display: grid;
+  /* animate from 0fr → 1fr for a smooth width expand */
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pill-expand--open {
+  grid-template-columns: 1fr;
+}
+
+.pill-expand-inner {
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Settings panel transition ── */
+.panel-enter-from,
+.panel-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateY(-6px) scale(0.97);
 }
 
-.dropdown-enter-active {
-  transition: all 200ms ease-out;
+.panel-enter-active {
+  transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.dropdown-leave-active {
+.panel-leave-active {
   transition: all 150ms ease-in;
-}
-
-.section-enter-from,
-.section-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.section-enter-active {
-  transition: all 150ms ease-out;
-}
-
-.section-leave-active {
-  transition: all 100ms ease-in;
 }
 </style>

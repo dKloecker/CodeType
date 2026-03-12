@@ -18,6 +18,7 @@
   --color-green-950: #052e16;
 }
 
+/* Page-level theme: always dark with green accent */
 :root {
   --bg-base: #1a1a1a;
   --bg-surface: #222222;
@@ -54,7 +55,7 @@ body::after {
   background-size: 256px 256px;
 }
 
-/* Typing area character styles */
+/* Typing area character styles — uses CSS custom properties scoped per-snippet theme */
 .char-untyped {
   opacity: 0.35;
 }
@@ -64,30 +65,29 @@ body::after {
 }
 
 .char-incorrect {
-  color: var(--error-color) !important;
   opacity: 1;
-  text-decoration: wavy underline var(--error-color);
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
   text-underline-offset: 3px;
 }
 
 .char-cursor {
   opacity: 1;
-  background: rgba(74, 222, 128, 0.08);
 }
 
 .char-cursor.cursor-line {
-  border-left: 2px solid var(--accent-primary);
+  border-left: 2px solid var(--snippet-cursor, #4ade80);
   margin-left: -1px;
   animation: blink-border 1s step-end infinite;
 }
 
 .char-cursor.cursor-underlined {
-  border-bottom: 2px solid var(--accent-primary);
+  border-bottom: 2px solid var(--snippet-cursor, #4ade80);
   animation: blink-border 1s step-end infinite;
 }
 
 .char-cursor.cursor-block {
-  outline: 1.5px solid var(--accent-primary);
+  outline: 1.5px solid var(--snippet-cursor, #4ade80);
   animation: blink-outline 1s step-end infinite;
 }
 

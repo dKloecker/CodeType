@@ -53,7 +53,7 @@ onUnmounted(() => {
 <template>
   <div
     class="results-overlay absolute inset-0 flex items-center justify-center z-10"
-    style="background: rgba(26, 26, 26, 0.92)"
+    style="background: color-mix(in srgb, var(--bg-base) 92%, transparent)"
     @keydown="handleKeydown"
   >
     <div class="text-center">
