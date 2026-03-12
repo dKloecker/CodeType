@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { CharState } from '~/composables/useTypingEngine'
+import type { CursorStyle } from '~/composables/useCursorConfig'
 
-defineProps<{
+const props = defineProps<{
   flatChars: CharState[]
   cursorIndex: number
   loading: boolean
+  cursorStyle: CursorStyle
 }>()
 
 const emit = defineEmits<{
@@ -12,6 +14,7 @@ const emit = defineEmits<{
 }>()
 
 const inputRef = ref<HTMLInputElement | null>(null)
+const scrollContainer = ref<HTMLElement | null>(null)
 
 function focusInput() {
   inputRef.value?.focus()
@@ -24,6 +27,15 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', focusInput)
+})
+
+watch(() => props.cursorIndex, () => {
+  nextTick(() => {
+    scrollContainer.value?.querySelector('.char-cursor')?.scrollIntoView({
+      block: 'center',
+      behavior: 'smooth'
+    })
+  })
 })
 
 // Group chars into lines for rendering
@@ -39,6 +51,14 @@ function getLines(chars: CharState[]): CharState[][] {
     }
   }
   return lines
+}
+
+function charClass(ch: CharState): string {
+  const base = 'char-' + ch.status
+  if (ch.status === 'cursor') {
+    return base + ' cursor-' + props.cursorStyle
+  }
+  return base
 }
 </script>
 
@@ -59,19 +79,24 @@ function getLines(chars: CharState[]): CharState[][] {
       loading snippet...
     </div>
 
-    <pre
+    <div
       v-else
-      class="font-mono leading-[1.8] text-[1.1rem] whitespace-pre-wrap break-all outline-none"
-      @click="focusInput"
-    ><template v-for="(line, lineIdx) in getLines(flatChars)" :key="lineIdx"><template v-for="ch in line" :key="ch.index"><span
-          v-if="!ch.isNewline"
-          :class="'char-' + ch.status"
-          :style="ch.status === 'incorrect'
-            ? { color: 'var(--error-color)' }
-            : { color: ch.color }"
-        >{{ ch.char }}</span><span
-          v-else
-          :class="'char-' + ch.status"
-        >{{ '\n' }}</span></template></template></pre>
+      ref="scrollContainer"
+      class="typing-scroll max-h-[60vh] overflow-y-auto"
+    >
+      <pre
+        class="font-mono leading-[1.8] text-[1.1rem] whitespace-pre-wrap break-all outline-none"
+        @click="focusInput"
+      ><template v-for="(line, lineIdx) in getLines(flatChars)" :key="lineIdx"><template v-for="ch in line" :key="ch.index"><span
+            v-if="!ch.isNewline"
+            :class="charClass(ch)"
+            :style="ch.status === 'incorrect'
+              ? { color: 'var(--error-color)' }
+              : { color: ch.color }"
+          >{{ ch.char }}</span><span
+            v-else
+            :class="charClass(ch)"
+          >{{ '\n' }}</span></template></template></pre>
+    </div>
   </div>
 </template>

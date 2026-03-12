@@ -2,10 +2,12 @@
 const category = ref('algorithm')
 const language = ref('python')
 const lineCount = ref(30)
-const showSettings = ref(false)
+const mode = ref<'until-finished' | 'timed'>('until-finished')
+const timedDuration = ref<30 | 60 | 120>(60)
 
 const { snippet, loading, refresh } = useSnippet(category, language, lineCount)
 const { indentStyle, spacesPerTab } = useIndentConfig()
+const { cursorStyle } = useCursorConfig()
 
 const {
   flatChars,
@@ -15,7 +17,8 @@ const {
   errors,
   handleKeydown,
   reset,
-  ready
+  ready,
+  forceFinish
 } = useTypingEngine(snippet, { indentStyle, spacesPerTab })
 
 const {
@@ -28,6 +31,17 @@ const {
 } = useMetrics(startTime, flatChars, cursorIndex, finished, errors)
 
 const isActive = computed(() => startTime.value !== null)
+
+const remainingSeconds = computed(() =>
+  timedDuration.value - elapsedSeconds.value
+)
+
+// Timed mode: force finish when time runs out
+watch(elapsedSeconds, (elapsed) => {
+  if (mode.value === 'timed' && elapsed >= timedDuration.value && !finished.value) {
+    forceFinish()
+  }
+})
 
 // Tab+Enter restart detection
 let tabPressed = false
@@ -60,23 +74,28 @@ watch([category, language, lineCount], () => {
 
 <template>
   <div
-    class="min-h-screen flex flex-col"
+    class="min-h-screen flex flex-col pb-24"
     style="background: var(--bg-base)"
   >
-    <AppHeader v-model:show-settings="showSettings" />
-    <IndentSettings v-model:open="showSettings" />
+    <AppHeader />
 
     <ModeSelector
       v-model:category="category"
       v-model:language="language"
       v-model:line-count="lineCount"
+      v-model:mode="mode"
+      v-model:timed-duration="timedDuration"
+      v-model:indent-style="indentStyle"
+      v-model:spaces-per-tab="spacesPerTab"
+      v-model:cursor-style="cursorStyle"
     />
 
-    <div class="flex-1 flex flex-col items-center justify-center relative">
+    <div class="flex-1 flex flex-col items-center justify-center relative pt-16">
       <TypingArea
         :flat-chars="flatChars"
         :cursor-index="cursorIndex"
         :loading="loading || !ready"
+        :cursor-style="cursorStyle"
         @keydown="onKeydown"
       />
 
@@ -99,6 +118,8 @@ watch([category, language, lineCount], () => {
       :accuracy="accuracy"
       :elapsed-seconds="elapsedSeconds"
       :active="isActive"
+      :mode="mode"
+      :remaining-seconds="remainingSeconds"
     />
 
     <footer class="text-center py-3 text-xs" style="color: var(--text-muted)">

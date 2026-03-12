@@ -66,19 +66,59 @@ body::after {
 .char-incorrect {
   color: var(--error-color) !important;
   opacity: 1;
+  text-decoration: wavy underline var(--error-color);
+  text-underline-offset: 3px;
 }
 
 .char-cursor {
   opacity: 1;
-  border-left: 2px solid var(--accent-primary);
-  margin-left: -1px;
-  animation: blink 1s step-end infinite;
+  background: rgba(74, 222, 128, 0.08);
 }
 
-@keyframes blink {
+.char-cursor.cursor-line {
+  border-left: 2px solid var(--accent-primary);
+  margin-left: -1px;
+  animation: blink-border 1s step-end infinite;
+}
+
+.char-cursor.cursor-underline {
+  border-bottom: 2px solid var(--accent-primary);
+  animation: blink-border 1s step-end infinite;
+}
+
+.char-cursor.cursor-box {
+  outline: 1.5px solid var(--accent-primary);
+  animation: blink-outline 1s step-end infinite;
+}
+
+@keyframes blink-border {
   50% {
     border-color: transparent;
   }
+}
+
+@keyframes blink-outline {
+  50% {
+    outline-color: transparent;
+  }
+}
+
+/* Scrollable typing area */
+.typing-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.typing-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.typing-scroll::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+.typing-scroll::-webkit-scrollbar-thumb:hover {
+  background: #444;
 }
 
 /* Stats bar transition */

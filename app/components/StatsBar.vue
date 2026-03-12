@@ -1,11 +1,13 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   cpm: number
   wpm: number
   lpm: number
   accuracy: number
   elapsedSeconds: number
   active: boolean
+  mode: 'until-finished' | 'timed'
+  remainingSeconds: number
 }>()
 
 function formatTime(seconds: number): string {
@@ -17,8 +19,9 @@ function formatTime(seconds: number): string {
 
 <template>
   <div
-    class="flex items-center justify-center gap-6 py-4 text-sm transition-opacity duration-200"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center gap-6 text-sm rounded-full px-6 py-3 transition-opacity duration-200"
     :class="active ? 'stats-active' : 'stats-idle'"
+    style="background: rgba(34, 34, 34, 0.85); backdrop-filter: blur(8px); border: 1px solid #333"
   >
     <div>
       <span style="color: var(--text-muted)">LPM: </span>
@@ -40,7 +43,13 @@ function formatTime(seconds: number): string {
       <span style="color: var(--text-primary)">{{ accuracy.toFixed(1) }}%</span>
     </div>
     <span style="color: #333">|</span>
-    <div>
+    <div v-if="props.mode === 'timed'">
+      <span style="color: var(--text-muted)">LEFT: </span>
+      <span
+        :style="{ color: remainingSeconds < 10 ? 'var(--accent-primary)' : 'var(--text-primary)' }"
+      >{{ formatTime(Math.max(0, remainingSeconds)) }}</span>
+    </div>
+    <div v-else>
       <span style="color: var(--text-muted)">TIME: </span>
       <span style="color: var(--text-primary)">{{ formatTime(elapsedSeconds) }}</span>
     </div>

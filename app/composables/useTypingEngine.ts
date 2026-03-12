@@ -195,18 +195,44 @@ export function useTypingEngine(
       const prevIdx = idx - 1
       const prev = chars[prevIdx]!
 
-      if (prev.isNewline && prev.status === 'correct') return
-
+      // At auto-advanced indent chars: undo all indent chars AND the preceding newline
       if (prev.isIndent && prev.status === 'correct') {
-        let scanIdx = prevIdx - 1
+        let scanIdx = prevIdx
+        // Find the start of the auto-advanced indent block
         while (scanIdx >= 0 && chars[scanIdx]!.isIndent && chars[scanIdx]!.status === 'correct') {
           scanIdx--
         }
+        // If preceded by a correct newline, undo all indent chars and place cursor on newline
         if (scanIdx >= 0 && chars[scanIdx]!.isNewline && chars[scanIdx]!.status === 'correct') {
+          // Unmark current cursor position
+          if (idx < chars.length) {
+            chars[idx]!.status = 'untyped'
+          }
+          // Un-type all indent chars between newline and cursor
+          for (let i = scanIdx + 1; i <= prevIdx; i++) {
+            chars[i]!.status = 'untyped'
+            errors.value.delete(i)
+          }
+          // Un-type the newline and place cursor on it
+          chars[scanIdx]!.status = 'cursor'
+          errors.value.delete(scanIdx)
+          cursorIndex.value = scanIdx
           return
         }
       }
 
+      // At a correct newline: un-type it and place cursor on it
+      if (prev.isNewline && prev.status === 'correct') {
+        if (idx < chars.length) {
+          chars[idx]!.status = 'untyped'
+        }
+        prev.status = 'cursor'
+        errors.value.delete(prevIdx)
+        cursorIndex.value = prevIdx
+        return
+      }
+
+      // Normal chars: un-type prev char, move back
       if (idx < chars.length) {
         chars[idx]!.status = 'untyped'
       }
@@ -281,6 +307,10 @@ export function useTypingEngine(
     }
   }
 
+  function forceFinish() {
+    finished.value = true
+  }
+
   return {
     flatChars,
     cursorIndex,
@@ -289,6 +319,7 @@ export function useTypingEngine(
     errors,
     ready,
     handleKeydown,
-    reset
+    reset,
+    forceFinish
   }
 }

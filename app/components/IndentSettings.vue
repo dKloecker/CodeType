@@ -8,6 +8,9 @@ const emit = defineEmits<{
 }>()
 
 const { indentStyle, spacesPerTab } = useIndentConfig()
+const { cursorStyle } = useCursorConfig()
+
+const cursorStyles = ['line', 'underline', 'box'] as const
 </script>
 
 <template>
@@ -17,7 +20,7 @@ const { indentStyle, spacesPerTab } = useIndentConfig()
     style="background: var(--bg-overlay); border: 1px solid #333"
   >
     <div class="flex items-center justify-between mb-4">
-      <span class="text-sm" style="color: var(--text-muted)">indent settings</span>
+      <span class="text-sm" style="color: var(--text-muted)">settings</span>
       <button
         class="p-1 transition-opacity duration-200 hover:opacity-70"
         style="color: var(--text-muted)"
@@ -28,7 +31,7 @@ const { indentStyle, spacesPerTab } = useIndentConfig()
     </div>
 
     <div class="mb-3">
-      <label class="text-xs block mb-2" style="color: var(--text-muted)">style</label>
+      <label class="text-xs block mb-2" style="color: var(--text-muted)">indent style</label>
       <div class="flex gap-2">
         <button
           class="px-3 py-1 text-xs rounded transition-all duration-200"
@@ -55,7 +58,7 @@ const { indentStyle, spacesPerTab } = useIndentConfig()
       </div>
     </div>
 
-    <div v-if="indentStyle === 'spaces'">
+    <div v-if="indentStyle === 'spaces'" class="mb-3">
       <label class="text-xs block mb-2" style="color: var(--text-muted)">spaces per tab</label>
       <div class="flex gap-2">
         <button
@@ -70,6 +73,25 @@ const { indentStyle, spacesPerTab } = useIndentConfig()
           @click="spacesPerTab = n"
         >
           {{ n }}
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-xs block mb-2" style="color: var(--text-muted)">caret style</label>
+      <div class="flex gap-2">
+        <button
+          v-for="style in cursorStyles"
+          :key="style"
+          class="px-3 py-1 text-xs rounded transition-all duration-200"
+          :style="{
+            background: cursorStyle === style ? 'var(--accent-muted)' : 'transparent',
+            color: cursorStyle === style ? 'var(--accent-primary)' : 'var(--text-muted)',
+            border: '1px solid ' + (cursorStyle === style ? 'var(--accent-primary)' : '#333')
+          }"
+          @click="cursorStyle = style"
+        >
+          {{ style }}
         </button>
       </div>
     </div>
