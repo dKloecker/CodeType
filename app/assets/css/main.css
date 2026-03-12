@@ -81,12 +81,12 @@ body::after {
   animation: blink-border 1s step-end infinite;
 }
 
-.char-cursor.cursor-underline {
+.char-cursor.cursor-underlined {
   border-bottom: 2px solid var(--accent-primary);
   animation: blink-border 1s step-end infinite;
 }
 
-.char-cursor.cursor-box {
+.char-cursor.cursor-block {
   outline: 1.5px solid var(--accent-primary);
   animation: blink-outline 1s step-end infinite;
 }

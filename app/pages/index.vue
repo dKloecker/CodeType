@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const category = ref('algorithm')
-const language = ref('python')
-const lineCount = ref(30)
+const language = ref('')
+const lineCount = ref(10)
 const mode = ref<'until-finished' | 'timed'>('until-finished')
-const timedDuration = ref<30 | 60 | 120>(60)
+const timedDuration = ref<10 | 30 | 60>(30)
 
 const { snippet, loading, refresh } = useSnippet(category, language, lineCount)
 const { indentStyle, spacesPerTab } = useIndentConfig()

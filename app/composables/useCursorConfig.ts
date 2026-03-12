@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'codetype-cursor-config'
 
-export type CursorStyle = 'line' | 'underline' | 'box'
+export type CursorStyle = 'line' | 'underlined' | 'block'
 
 export function useCursorConfig() {
   const cursorStyle = ref<CursorStyle>('line')
@@ -10,7 +10,7 @@ export function useCursorConfig() {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored) as { cursorStyle: CursorStyle }
-        if (['line', 'underline', 'box'].includes(parsed.cursorStyle)) {
+        if (['line', 'underlined', 'block'].includes(parsed.cursorStyle)) {
           cursorStyle.value = parsed.cursorStyle
         }
       }
