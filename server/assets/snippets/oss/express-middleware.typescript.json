@@ -1,0 +1,8 @@
+{
+  "id": "express-middleware.typescript",
+  "title": "Express Middleware",
+  "category": "oss",
+  "language": "typescript",
+  "lines": 18,
+  "code": "import { Request, Response, NextFunction } from \"express\";\n\ninterface AppError extends Error {\n  statusCode: number;\n}\n\nfunction errorHandler(\n  err: AppError,\n  req: Request,\n  res: Response,\n  next: NextFunction\n): void {\n  const status = err.statusCode || 500;\n  res.status(status).json({\n    error: err.message,\n    path: req.originalUrl,\n  });\n}"
+}

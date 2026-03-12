@@ -1,0 +1,8 @@
+{
+  "id": "bfs.python",
+  "title": "Breadth-First Search",
+  "category": "algorithm",
+  "language": "python",
+  "lines": 15,
+  "code": "from collections import deque\n\ndef bfs(graph: dict[int, list[int]], start: int) -> list[int]:\n    visited: set[int] = set()\n    queue: deque[int] = deque([start])\n    visited.add(start)\n    order: list[int] = []\n    while queue:\n        node = queue.popleft()\n        order.append(node)\n        for neighbor in graph[node]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return order"
+}

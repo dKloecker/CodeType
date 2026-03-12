@@ -1,0 +1,8 @@
+{
+  "id": "shared-pointer.cpp",
+  "title": "Shared Pointer Implementation",
+  "category": "language-specific",
+  "language": "cpp",
+  "lines": 36,
+  "code": "template <typename T>\nclass SharedPtr {\n    T* ptr;\n    int* ref_count;\npublic:\n    explicit SharedPtr(T* p = nullptr)\n        : ptr(p), ref_count(new int(1)) {}\n\n    SharedPtr(const SharedPtr& other)\n        : ptr(other.ptr), ref_count(other.ref_count) {\n        (*ref_count)++;\n    }\n\n    SharedPtr& operator=(const SharedPtr& other) {\n        if (this != &other) {\n            release();\n            ptr = other.ptr;\n            ref_count = other.ref_count;\n            (*ref_count)++;\n        }\n        return *this;\n    }\n\n    ~SharedPtr() { release(); }\n\n    void release() {\n        if (--(*ref_count) == 0) {\n            delete ptr;\n            delete ref_count;\n        }\n    }\n\n    T& operator*() const { return *ptr; }\n    T* operator->() const { return ptr; }\n    int use_count() const { return *ref_count; }\n};"
+}

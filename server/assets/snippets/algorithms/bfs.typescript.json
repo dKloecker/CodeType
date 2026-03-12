@@ -1,0 +1,8 @@
+{
+  "id": "bfs.typescript",
+  "title": "Breadth-First Search",
+  "category": "algorithm",
+  "language": "typescript",
+  "lines": 17,
+  "code": "function bfs(graph: Map<number, number[]>, start: number): number[] {\n  const visited = new Set<number>();\n  const queue: number[] = [start];\n  visited.add(start);\n  const order: number[] = [];\n  while (queue.length > 0) {\n    const node = queue.shift()!;\n    order.push(node);\n    for (const neighbor of graph.get(node) ?? []) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        queue.push(neighbor);\n      }\n    }\n  }\n  return order;\n}"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "dijkstra.cpp",
+  "title": "Dijkstra's Algorithm",
+  "category": "algorithm",
+  "language": "cpp",
+  "lines": 24,
+  "code": "#include <vector>\n#include <queue>\n#include <limits>\nusing namespace std;\n\nvector<int> dijkstra(vector<vector<pair<int,int>>>& graph, int start) {\n    int n = graph.size();\n    vector<int> dist(n, numeric_limits<int>::max());\n    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;\n    dist[start] = 0;\n    pq.push({0, start});\n    while (!pq.empty()) {\n        auto [cost, u] = pq.top();\n        pq.pop();\n        if (cost > dist[u]) continue;\n        for (auto [v, w] : graph[u]) {\n            if (dist[u] + w < dist[v]) {\n                dist[v] = dist[u] + w;\n                pq.push({dist[v], v});\n            }\n        }\n    }\n    return dist;\n}"
+}

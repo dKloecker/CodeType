@@ -1,0 +1,8 @@
+{
+  "id": "binary-search.typescript",
+  "title": "Binary Search",
+  "category": "algorithm",
+  "language": "typescript",
+  "lines": 15,
+  "code": "function binarySearch(arr: number[], target: number): number {\n  let left = 0;\n  let right = arr.length - 1;\n  while (left <= right) {\n    const mid = left + Math.floor((right - left) / 2);\n    if (arr[mid] === target) {\n      return mid;\n    } else if (arr[mid] < target) {\n      left = mid + 1;\n    } else {\n      right = mid - 1;\n    }\n  }\n  return -1;\n}"
+}

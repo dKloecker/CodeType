@@ -1,0 +1,8 @@
+{
+  "id": "bubble-sort.typescript",
+  "title": "Bubble Sort",
+  "category": "algorithm",
+  "language": "typescript",
+  "lines": 14,
+  "code": "function bubbleSort(arr: number[]): number[] {\n  const n = arr.length;\n  for (let i = 0; i < n; i++) {\n    let swapped = false;\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];\n        swapped = true;\n      }\n    }\n    if (!swapped) break;\n  }\n  return arr;\n}"
+}

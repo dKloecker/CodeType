@@ -1,0 +1,8 @@
+{
+  "id": "decorator-pattern.python",
+  "title": "Python Decorator Pattern",
+  "category": "language-specific",
+  "language": "python",
+  "lines": 17,
+  "code": "import functools\nimport time\nfrom typing import Callable, Any\n\ndef timer(func: Callable[..., Any]) -> Callable[..., Any]:\n    @functools.wraps(func)\n    def wrapper(*args: Any, **kwargs: Any) -> Any:\n        start = time.perf_counter()\n        result = func(*args, **kwargs)\n        elapsed = time.perf_counter() - start\n        print(f\"{func.__name__} took {elapsed:.4f}s\")\n        return result\n    return wrapper\n\n@timer\ndef slow_function(n: int) -> int:\n    return sum(range(n))"
+}

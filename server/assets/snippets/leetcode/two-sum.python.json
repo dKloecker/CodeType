@@ -1,0 +1,8 @@
+{
+  "id": "two-sum.python",
+  "title": "Two Sum",
+  "category": "leetcode",
+  "language": "python",
+  "lines": 8,
+  "code": "def two_sum(nums: list[int], target: int) -> list[int]:\n    seen: dict[int, int] = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []"
+}

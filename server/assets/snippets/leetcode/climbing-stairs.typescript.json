@@ -1,0 +1,8 @@
+{
+  "id": "climbing-stairs.typescript",
+  "title": "Climbing Stairs",
+  "category": "leetcode",
+  "language": "typescript",
+  "lines": 11,
+  "code": "function climbStairs(n: number): number {\n  if (n <= 2) return n;\n  let prev = 1;\n  let curr = 2;\n  for (let i = 3; i <= n; i++) {\n    const next = prev + curr;\n    prev = curr;\n    curr = next;\n  }\n  return curr;\n}"
+}

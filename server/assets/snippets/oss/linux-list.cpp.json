@@ -1,0 +1,8 @@
+{
+  "id": "linux-list.cpp",
+  "title": "Linux Kernel-Style Linked List",
+  "category": "oss",
+  "language": "cpp",
+  "lines": 21,
+  "code": "#include <cstddef>\n\nstruct list_head {\n    list_head* next;\n    list_head* prev;\n};\n\nvoid list_init(list_head* head) {\n    head->next = head;\n    head->prev = head;\n}\n\nvoid list_add(list_head* entry, list_head* head) {\n    entry->next = head->next;\n    entry->prev = head;\n    head->next->prev = entry;\n    head->next = entry;\n}\n\n#define LIST_ENTRY(ptr, type, member) \\\n    ((type*)((char*)(ptr) - offsetof(type, member)))"
+}

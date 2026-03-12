@@ -1,0 +1,8 @@
+{
+  "id": "fastapi-route.python",
+  "title": "FastAPI Route Handler",
+  "category": "oss",
+  "language": "python",
+  "lines": 15,
+  "code": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Item(BaseModel):\n    name: str\n    price: float\n    in_stock: bool = True\n\n@app.post(\"/items\", status_code=201)\nasync def create_item(item: Item) -> dict:\n    if item.price < 0:\n        raise HTTPException(status_code=400, detail=\"Price must be positive\")\n    return {\"id\": 1, \"item\": item.model_dump()}"
+}
