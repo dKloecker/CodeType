@@ -10,48 +10,54 @@ const props = defineProps<{
   remainingSeconds: number
 }>()
 
+interface Stat {
+  label: string
+  value: string
+  highlight?: boolean
+}
+
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60)
   const s = Math.floor(seconds % 60)
   return `${m}:${s.toString().padStart(2, '0')}`
 }
+
+const stats = computed<Stat[]>(() => [
+  { label: 'LPM', value: props.lpm.toFixed(1) },
+  { label: 'WPM', value: String(Math.round(props.wpm)) },
+  { label: 'CPM', value: String(Math.round(props.cpm)) },
+  { label: 'ACC', value: `${props.accuracy.toFixed(1)}%` },
+  props.mode === 'timed'
+    ? { label: 'LEFT', value: formatTime(Math.max(0, props.remainingSeconds)), highlight: props.remainingSeconds < 10 }
+    : { label: 'TIME', value: formatTime(props.elapsedSeconds) }
+])
 </script>
 
 <template>
   <div
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center gap-6 text-sm rounded-full px-6 py-3 transition-opacity duration-200"
-    :class="active ? 'stats-active' : 'stats-idle'"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex items-center rounded-full transition-opacity duration-200 font-mono text-sm"
+    :class="active ? 'opacity-100' : 'opacity-40'"
     style="background: var(--bg-surface); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.06)"
   >
-    <div>
-      <span style="color: var(--text-muted)">LPM: </span>
-      <span style="color: var(--text-primary)">{{ lpm.toFixed(1) }}</span>
-    </div>
-    <span style="color: rgba(255,255,255,0.08)">|</span>
-    <div>
-      <span style="color: var(--text-muted)">WPM: </span>
-      <span style="color: var(--text-primary)">{{ Math.round(wpm) }}</span>
-    </div>
-    <span style="color: rgba(255,255,255,0.08)">|</span>
-    <div>
-      <span style="color: var(--text-muted)">CPM: </span>
-      <span style="color: var(--text-primary)">{{ Math.round(cpm) }}</span>
-    </div>
-    <span style="color: rgba(255,255,255,0.08)">|</span>
-    <div>
-      <span style="color: var(--text-muted)">ACC: </span>
-      <span style="color: var(--text-primary)">{{ accuracy.toFixed(1) }}%</span>
-    </div>
-    <span style="color: rgba(255,255,255,0.08)">|</span>
-    <div v-if="props.mode === 'timed'">
-      <span style="color: var(--text-muted)">LEFT: </span>
-      <span
-        :style="{ color: remainingSeconds < 10 ? 'var(--accent-primary)' : 'var(--text-primary)' }"
-      >{{ formatTime(Math.max(0, remainingSeconds)) }}</span>
-    </div>
-    <div v-else>
-      <span style="color: var(--text-muted)">TIME: </span>
-      <span style="color: var(--text-primary)">{{ formatTime(elapsedSeconds) }}</span>
-    </div>
+    <template
+      v-for="(stat, i) in stats"
+      :key="stat.label"
+    >
+      <div
+        v-if="i > 0"
+        class="w-px h-4 shrink-0"
+        style="background: rgba(255,255,255,0.1)"
+      />
+      <div class="flex items-baseline gap-1.5 px-4 py-2.5">
+        <span
+          class="text-[10px] uppercase tracking-widest"
+          style="color: var(--text-muted)"
+        >{{ stat.label }}</span>
+        <span
+          class="font-semibold"
+          :style="{ color: stat.highlight ? 'var(--accent-primary)' : 'var(--text-primary)' }"
+        >{{ stat.value }}</span>
+      </div>
+    </template>
   </div>
 </template>

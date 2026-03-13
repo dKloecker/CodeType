@@ -5,9 +5,8 @@ const lineCount = ref(10)
 const mode = ref<'until-finished' | 'timed'>('until-finished')
 const timedDuration = ref<10 | 30 | 60>(30)
 
+const { indentStyle, spacesPerTab } = useSettings()
 const { snippet, loading, refresh } = useSnippet(category, language, lineCount)
-const { indentStyle, spacesPerTab } = useIndentConfig()
-const { cursorStyle } = useCursorConfig()
 
 const {
   flatChars,
@@ -34,9 +33,7 @@ const {
 
 const isActive = computed(() => startTime.value !== null)
 
-const remainingSeconds = computed(() =>
-  timedDuration.value - elapsedSeconds.value
-)
+const remainingSeconds = computed(() => timedDuration.value - elapsedSeconds.value)
 
 // Timed mode: force finish when time runs out
 watch(elapsedSeconds, (elapsed) => {
@@ -45,7 +42,7 @@ watch(elapsedSeconds, (elapsed) => {
   }
 })
 
-// Tab+Enter restart detection
+// Tab+Enter = new snippet, Esc = reset (handled in typing engine)
 let tabPressed = false
 
 function onKeydown(e: KeyboardEvent) {
@@ -59,19 +56,12 @@ function onKeydown(e: KeyboardEvent) {
   } else {
     tabPressed = false
   }
-
   handleKeydown(e)
 }
 
-// Fetch initial snippet
-onMounted(() => {
-  refresh()
-})
+onMounted(() => refresh())
 
-// Refetch on filter change
-watch([category, language, lineCount], () => {
-  refresh()
-})
+watch([category, language, lineCount], () => refresh())
 </script>
 
 <template>
@@ -81,23 +71,22 @@ watch([category, language, lineCount], () => {
   >
     <AppHeader />
 
-    <ModeSelector
-      v-model:category="category"
-      v-model:language="language"
-      v-model:line-count="lineCount"
-      v-model:mode="mode"
-      v-model:timed-duration="timedDuration"
-      v-model:indent-style="indentStyle"
-      v-model:spaces-per-tab="spacesPerTab"
-      v-model:cursor-style="cursorStyle"
-    />
+    <!-- Top padding to clear the fixed header -->
+    <div class="pt-16">
+      <ModeSelector
+        v-model:category="category"
+        v-model:language="language"
+        v-model:line-count="lineCount"
+        v-model:mode="mode"
+        v-model:timed-duration="timedDuration"
+      />
+    </div>
 
     <div class="flex-1 flex flex-col items-center justify-center relative">
       <TypingArea
         :flat-chars="flatChars"
         :cursor-index="cursorIndex"
         :loading="loading || !ready"
-        :cursor-style="cursorStyle"
         @keydown="onKeydown"
       />
 

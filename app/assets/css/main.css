@@ -18,8 +18,11 @@
   --color-green-950: #052e16;
 }
 
-/* Page-level theme: always dark with green accent */
+/* App is always dark — force dark color scheme so NuxtUI picks the right tokens */
 :root {
+  color-scheme: dark;
+
+  /* App design tokens */
   --bg-base: #1a1a1a;
   --bg-surface: #222222;
   --bg-overlay: #2a2a2a;
