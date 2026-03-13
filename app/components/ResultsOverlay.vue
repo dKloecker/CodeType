@@ -421,69 +421,45 @@ const consistency = computed(() => {
       </div>
 
       <!-- ═══ Action footer ═══ -->
-      <div class="flex items-center justify-center gap-8">
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+      <div class="flex items-center justify-center gap-2">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-chevron-right"
           title="Next test"
           @click="emit('next')"
-        >
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="w-5 h-5"
-          />
-        </button>
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-rotate-ccw"
           title="Redo"
           @click="emit('restart')"
-        >
-          <UIcon
-            name="i-lucide-rotate-ccw"
-            class="w-5 h-5"
-          />
-        </button>
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-triangle-alert"
           title="Practice errors"
-        >
-          <UIcon
-            name="i-lucide-triangle-alert"
-            class="w-5 h-5"
-          />
-        </button>
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-align-justify"
           title="Toggle line chart"
-        >
-          <UIcon
-            name="i-lucide-align-justify"
-            class="w-5 h-5"
-          />
-        </button>
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-rewind"
           title="Rewind"
-        >
-          <UIcon
-            name="i-lucide-rewind"
-            class="w-5 h-5"
-          />
-        </button>
-        <button
-          class="action-icon"
-          style="color: var(--text-muted)"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-download"
           title="Share / export"
-        >
-          <UIcon
-            name="i-lucide-download"
-            class="w-5 h-5"
-          />
-        </button>
+        />
       </div>
     </div>
   </div>
@@ -545,17 +521,5 @@ const consistency = computed(() => {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* ── Action footer icons ── */
-.action-icon {
-  padding: 8px;
-  border-radius: 8px;
-  transition: color 150ms ease, background 150ms ease;
-}
-
-.action-icon:hover {
-  color: var(--text-primary) !important;
-  background: rgba(255, 255, 255, 0.04);
 }
 </style>

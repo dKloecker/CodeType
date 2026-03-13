@@ -65,24 +65,23 @@ watch([category, language, lineCount], () => refresh())
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex flex-col pb-24"
-    style="background: var(--bg-base)"
-  >
+  <UMain class="flex flex-col pb-24">
     <AppHeader />
 
     <!-- Top padding to clear the fixed header -->
     <div class="pt-16">
-      <ModeSelector
-        v-model:category="category"
-        v-model:language="language"
-        v-model:line-count="lineCount"
-        v-model:mode="mode"
-        v-model:timed-duration="timedDuration"
-      />
+      <UContainer>
+        <ModeSelector
+          v-model:category="category"
+          v-model:language="language"
+          v-model:line-count="lineCount"
+          v-model:mode="mode"
+          v-model:timed-duration="timedDuration"
+        />
+      </UContainer>
     </div>
 
-    <div class="flex-1 flex flex-col items-center justify-center relative">
+    <UContainer class="flex-1 flex flex-col items-center justify-center relative">
       <TypingArea
         :flat-chars="flatChars"
         :cursor-index="cursorIndex"
@@ -103,7 +102,7 @@ watch([category, language, lineCount], () => refresh())
         @restart="reset()"
         @next="refresh()"
       />
-    </div>
+    </UContainer>
 
     <StatsBar
       :cpm="cpm"
@@ -122,5 +121,5 @@ watch([category, language, lineCount], () => refresh())
     >
       tab + enter — restart &nbsp;&bull;&nbsp; esc — reset
     </footer>
-  </div>
+  </UMain>
 </template>

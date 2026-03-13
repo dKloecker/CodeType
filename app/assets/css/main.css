@@ -22,16 +22,24 @@
 :root {
   color-scheme: dark;
 
-  /* App design tokens */
-  --bg-base: #1a1a1a;
-  --bg-surface: #222222;
-  --bg-overlay: #2a2a2a;
-  --accent-primary: #4ade80;
-  --accent-dim: #22c55e;
-  --accent-muted: #166534;
-  --text-primary: #e5e5e5;
-  --text-muted: #6b7280;
-  --error-color: #f87171;
+  /* Override Nuxt UI dark-mode tokens to match app design */
+  --ui-bg:               #1a1a1a;
+  --ui-bg-elevated:      #222222;
+  --ui-bg-accented:      #2a2a2a;
+  --ui-text-highlighted: #e5e5e5;
+  --ui-text-muted:       #6b7280;
+  /* --ui-primary and --ui-error derive from green/red palette set in app.config.ts */
+
+  /* Aliases for components that reference these directly */
+  --bg-base:        var(--ui-bg);
+  --bg-surface:     var(--ui-bg-elevated);
+  --bg-overlay:     var(--ui-bg-accented);
+  --accent-primary: var(--ui-primary);
+  --accent-dim:     var(--ui-color-primary-500);
+  --accent-muted:   var(--ui-color-primary-800);
+  --text-primary:   var(--ui-text-highlighted);
+  --text-muted:     var(--ui-text-muted);
+  --error-color:    var(--ui-error);
 }
 
 html {
