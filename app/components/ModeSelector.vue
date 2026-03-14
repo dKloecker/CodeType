@@ -56,13 +56,10 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
     ref="containerRef"
     class="flex flex-col items-center w-full pt-4 pb-2 z-30 relative"
   >
-    <div
-      class="mode-pill inline-flex items-center rounded-[10px] text-[13px] overflow-hidden"
-      style="background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.06)"
-    >
+    <BasePill class="text-[13px]">
       <!-- Language -->
       <button
-        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
         :style="{ color: isOpen('language') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('language')"
       >
@@ -70,7 +67,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-code-2"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span>{{ selectedLanguageLabel }}</span>
+        <span v-if="!isOpen('language')">{{ selectedLanguageLabel }}</span>
       </button>
 
       <div
@@ -95,7 +92,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
 
       <!-- Category -->
       <button
-        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
         :style="{ color: isOpen('category') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('category')"
       >
@@ -103,7 +100,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-layers"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span>{{ categoryOptions.find(o => o.value === category)?.label ?? category }}</span>
+        <span v-if="!isOpen('category')">{{ categoryOptions.find(o => o.value === category)?.label ?? category }}</span>
       </button>
 
       <div
@@ -128,7 +125,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
 
       <!-- Size -->
       <button
-        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
         :style="{ color: isOpen('size') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('size')"
       >
@@ -136,7 +133,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-ruler"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span>{{ lineCount }}</span>
+        <span v-if="!isOpen('size')">{{ lineCount }}</span>
       </button>
 
       <div
@@ -161,7 +158,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
 
       <!-- Mode -->
       <button
-        class="pill-btn flex items-center gap-1.5 px-3 py-2"
+        class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
         :style="{ color: isOpen('mode') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
         @click="toggle('mode')"
       >
@@ -169,7 +166,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-timer"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span>{{ modeLabel }}</span>
+        <span v-if="!isOpen('mode')">{{ modeLabel }}</span>
       </button>
 
       <div
@@ -199,11 +196,9 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
 
       <span class="pill-sep">|</span>
 
-      <!-- Settings (via UDropdownMenu — ClientOnly to avoid SSR Popper crash) -->
-      <ClientOnly>
-        <SettingsDropdown />
-      </ClientOnly>
-    </div>
+      <!-- Settings -->
+      <SettingsDropdown />
+    </BasePill>
   </div>
 </template>
 
@@ -237,9 +232,11 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
   display: grid;
   grid-template-columns: 0fr;
   transition: grid-template-columns 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
 }
 .pill-expand--open {
   grid-template-columns: 1fr;
+  pointer-events: auto;
 }
 .pill-expand-inner {
   overflow: hidden;

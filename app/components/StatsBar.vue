@@ -34,10 +34,11 @@ const stats = computed<Stat[]>(() => [
 </script>
 
 <template>
-  <div
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex items-center rounded-full transition-opacity duration-200 font-mono text-sm"
+  <BasePill
+    rounded="full"
+    blur
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-200 font-mono text-sm"
     :class="active ? 'opacity-100' : 'opacity-40'"
-    style="background: var(--bg-surface); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.06)"
   >
     <template
       v-for="(stat, i) in stats"
@@ -59,5 +60,5 @@ const stats = computed<Stat[]>(() => [
         >{{ stat.value }}</span>
       </div>
     </template>
-  </div>
+  </BasePill>
 </template>
