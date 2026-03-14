@@ -1,0 +1,14 @@
+{
+  "id": "min-stack.typescript",
+  "slug": "min-stack",
+  "title": "Min Stack",
+  "language": "typescript",
+  "category": "leetcode",
+  "subcategory": "design",
+  "tags": ["stack", "data-structure", "design"],
+  "lines": 18,
+  "difficulty": "intermediate",
+  "source": "LeetCode #155",
+  "code": "class MinStack {\n  private stack: number[] = []\n  private minStack: number[] = []\n\n  push(val: number): void {\n    this.stack.push(val)\n    const min = this.minStack.length ? Math.min(val, this.minStack.at(-1)!) : val\n    this.minStack.push(min)\n  }\n\n  pop(): void {\n    this.stack.pop()\n    this.minStack.pop()\n  }\n\n  top(): number { return this.stack.at(-1)! }\n  getMin(): number { return this.minStack.at(-1)! }\n}",
+  "description": "A parallel `minStack` tracks the running minimum at each stack level. When a new value is pushed, the current minimum is the smaller of the new value and the top of `minStack`. All four operations run in **O(1)** — the key insight is that the minimum can only change on push/pop."
+}

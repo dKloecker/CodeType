@@ -1,0 +1,12 @@
+{
+  "id": "group-by.typescript",
+  "slug": "group-by",
+  "title": "Group By Key",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["functional", "array", "generics", "hash-map"],
+  "lines": 1,
+  "difficulty": "intermediate",
+  "code": "const groupBy = <T>(arr: T[], key: (item: T) => string): Record<string, T[]> => arr.reduce((acc, item) => ({ ...acc, [key(item)]: [...(acc[key(item)] ?? []), item] }), {} as Record<string, T[]>)",
+  "description": "Partitions an array into a map of arrays keyed by a selector function. The spread `{ ...acc, [k]: [...existing, item] }` creates a new object on each step — readable but **O(n²)** due to spreading. For large arrays, prefer a mutating `reduce` with `acc[k] ??= []`."
+}

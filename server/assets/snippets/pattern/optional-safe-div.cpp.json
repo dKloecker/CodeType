@@ -1,0 +1,12 @@
+{
+  "id": "optional-safe-div.cpp",
+  "slug": "optional-safe-div",
+  "title": "Optional Safe Division",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["optional", "error-handling", "c++17", "stl"],
+  "lines": 4,
+  "difficulty": "beginner",
+  "code": "#include <optional>\nstd::optional<double> safe_div(double a, double b) {\n    return b != 0.0 ? std::optional<double>(a / b) : std::nullopt;\n}",
+  "description": "`std::optional<T>` represents a value that may or may not be present — a type-safe alternative to returning sentinel values like `-1` or `nullptr`. `std::nullopt` signals the absent case. Callers check with `.has_value()` or dereference with `*` / `.value()`."
+}

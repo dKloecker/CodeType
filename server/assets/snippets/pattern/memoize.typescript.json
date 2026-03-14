@@ -1,0 +1,12 @@
+{
+  "id": "memoize.typescript",
+  "slug": "memoize",
+  "title": "Memoize",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["functional", "higher-order", "memoization", "hash-map"],
+  "lines": 9,
+  "difficulty": "intermediate",
+  "code": "function memoize<T extends (...args: unknown[]) => unknown>(fn: T): T {\n  const cache = new Map<string, ReturnType<T>>()\n  return ((...args: Parameters<T>): ReturnType<T> => {\n    const key = JSON.stringify(args)\n    if (cache.has(key)) return cache.get(key)!\n    const result = fn(...args) as ReturnType<T>\n    cache.set(key, result)\n    return result\n  }) as T\n}",
+  "description": "Caches function results by serialising arguments to a JSON key. The non-null assertion `!` on `cache.get` is safe because we checked `has` first. `JSON.stringify` works for primitive arguments; for object-heavy use cases consider a `WeakMap` or a proper cache key strategy."
+}

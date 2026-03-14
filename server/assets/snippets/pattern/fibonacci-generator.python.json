@@ -1,0 +1,12 @@
+{
+  "id": "fibonacci-generator.python",
+  "slug": "fibonacci-generator",
+  "title": "Fibonacci Generator",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["generator", "math", "iterator"],
+  "lines": 7,
+  "difficulty": "beginner",
+  "code": "def fibonacci():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\ngen = fibonacci()\nfirst_ten = [next(gen) for _ in range(10)]",
+  "description": "A generator function that produces an infinite Fibonacci sequence. `yield` suspends execution and returns a value; the next `next()` call resumes from that point. The tuple swap `a, b = b, a + b` updates both in one step without a temporary variable."
+}

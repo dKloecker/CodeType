@@ -100,7 +100,8 @@ watch([category, language, lineCount, subcategory, difficulty], () => refresh())
       <TypingArea
         :flat-chars="flatChars"
         :cursor-index="cursorIndex"
-        :loading="loading || !ready"
+        :loading="loading || (!ready && snippet !== null)"
+        :no-results="!loading && snippet === null"
         @keydown="onKeydown"
       />
 

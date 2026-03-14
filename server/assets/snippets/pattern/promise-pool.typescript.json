@@ -1,0 +1,12 @@
+{
+  "id": "promise-pool.typescript",
+  "slug": "promise-pool",
+  "title": "Promise Pool",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["async", "concurrency", "utility"],
+  "lines": 12,
+  "difficulty": "advanced",
+  "code": "async function promisePool<T>(tasks: (() => Promise<T>)[], concurrency: number): Promise<T[]> {\n  const results: T[] = new Array(tasks.length)\n  let index = 0\n  async function worker(): Promise<void> {\n    while (index < tasks.length) {\n      const i = index++\n      results[i] = await tasks[i]()\n    }\n  }\n  await Promise.all(Array.from({ length: concurrency }, worker))\n  return results\n}",
+  "description": "Runs at most `concurrency` promises in parallel by using a shared `index` counter as a work queue. Each worker grabs the next task index atomically (JS is single-threaded so `index++` is safe). Results are stored by index to preserve order. **O(n)** total awaits."
+}

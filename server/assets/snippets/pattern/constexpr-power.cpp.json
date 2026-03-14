@@ -1,0 +1,12 @@
+{
+  "id": "constexpr-power.cpp",
+  "slug": "constexpr-power",
+  "title": "Constexpr Modular Exponentiation",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["math", "constexpr", "bit-manipulation", "modular-arithmetic"],
+  "lines": 9,
+  "difficulty": "intermediate",
+  "code": "constexpr long long power(long long base, int exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    while (exp > 0) {\n        if (exp & 1) result = result * base % mod;\n        base = base * base % mod;\n        exp >>= 1;\n    }\n    return result;\n}",
+  "description": "Fast exponentiation by squaring computes `base^exp % mod` in **O(log exp)** multiplications. `exp & 1` checks the lowest bit to decide whether to multiply the result. `exp >>= 1` halves the exponent each iteration. `constexpr` allows compile-time evaluation."
+}

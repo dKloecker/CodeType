@@ -1,0 +1,12 @@
+{
+  "id": "type-guard.typescript",
+  "slug": "type-guard",
+  "title": "Type Guard",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["type-system", "generics", "discriminated-union"],
+  "lines": 8,
+  "difficulty": "intermediate",
+  "code": "interface User { id: number; name: string; email: string }\ninterface Guest { sessionId: string }\nfunction isUser(value: User | Guest): value is User {\n  return 'id' in value && typeof (value as User).id === 'number'\n}\nfunction greet(actor: User | Guest): string {\n  return isUser(actor) ? `Hello, ${actor.name}` : `Hello, guest ${actor.sessionId}`\n}",
+  "description": "A user-defined type guard narrows a union type within a conditional branch. The `value is User` return type tells the compiler that when `isUser` returns `true`, `value` is `User`. Without it, TypeScript cannot narrow the type inside the `if` branch."
+}

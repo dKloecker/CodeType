@@ -1,0 +1,12 @@
+{
+  "id": "list-flatten.python",
+  "slug": "list-flatten",
+  "title": "Flatten Nested List",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["array", "list-comprehension", "functional"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "flat = [x for xs in nested for x in xs]",
+  "description": "A double-loop list comprehension that iterates over each sub-list `xs`, then over each element `x` within it. Equivalent to `itertools.chain.from_iterable` but without an import. Only flattens one level deep."
+}

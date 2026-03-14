@@ -1,0 +1,14 @@
+{
+  "id": "merge-intervals.cpp",
+  "slug": "merge-intervals",
+  "title": "Merge Intervals",
+  "language": "cpp",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": ["sorting", "array", "greedy"],
+  "lines": 11,
+  "difficulty": "intermediate",
+  "source": "LeetCode #56",
+  "code": "std::vector<std::vector<int>> merge(std::vector<std::vector<int>>& intervals) {\n    std::sort(intervals.begin(), intervals.end());\n    std::vector<std::vector<int>> merged;\n    for (auto& interval : intervals) {\n        if (merged.empty() || merged.back()[1] < interval[0]) {\n            merged.push_back(interval);\n        } else {\n            merged.back()[1] = std::max(merged.back()[1], interval[1]);\n        }\n    }\n    return merged;\n}",
+  "description": "Sort intervals by start time so overlapping ones are adjacent. Then scan linearly: if the current interval starts after the last merged one ends, append it; otherwise extend the last merged interval's end if needed. **O(n log n)** due to sorting."
+}

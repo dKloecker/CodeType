@@ -1,0 +1,12 @@
+{
+  "id": "pair-hash.cpp",
+  "slug": "pair-hash",
+  "title": "Pair Hash for unordered_map",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["hash-map", "data-structure", "stl", "template"],
+  "lines": 9,
+  "difficulty": "intermediate",
+  "code": "struct PairHash {\n    template<typename A, typename B>\n    std::size_t operator()(const std::pair<A, B>& p) const {\n        auto h1 = std::hash<A>{}(p.first);\n        auto h2 = std::hash<B>{}(p.second);\n        return h1 ^ (h2 << 1);\n    }\n};\nstd::unordered_map<std::pair<int,int>, int, PairHash> grid_map;",
+  "description": "The STL provides no default hash for `std::pair`, so `unordered_map` requires a custom hasher. This functor combines both hashes using XOR with a shift. The bit-shift reduces collisions when both components are similar. Pass `PairHash` as the third template argument."
+}

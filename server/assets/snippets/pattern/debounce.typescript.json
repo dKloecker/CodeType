@@ -1,0 +1,12 @@
+{
+  "id": "debounce.typescript",
+  "slug": "debounce",
+  "title": "Debounce",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["utility", "higher-order", "timer"],
+  "lines": 4,
+  "difficulty": "intermediate",
+  "code": "function debounce<T extends (...args: unknown[]) => void>(fn: T, delay: number): (...args: Parameters<T>) => void {\n  let timer: ReturnType<typeof setTimeout>\n  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay) }\n}",
+  "description": "Wraps a function so it only fires after `delay` ms of inactivity. Each call resets the timer. `Parameters<T>` preserves the original function's argument types. Common in search boxes and resize handlers to avoid excessive function calls."
+}

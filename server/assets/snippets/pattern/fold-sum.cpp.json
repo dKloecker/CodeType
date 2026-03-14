@@ -1,0 +1,12 @@
+{
+  "id": "fold-sum.cpp",
+  "slug": "fold-sum",
+  "title": "Fold Sum with accumulate",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["functional", "stl", "fold", "numeric"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "int total = std::accumulate(nums.begin(), nums.end(), 0, [](int acc, int x){ return acc + x; });",
+  "description": "`std::accumulate` is the C++ equivalent of `reduce` — it folds a range left-to-right with an initial value. The lambda makes the operation explicit; for simple sums you can omit it entirely since `+` is the default. Requires `<numeric>`."
+}

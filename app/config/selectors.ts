@@ -23,14 +23,17 @@ export const subcategoryMap: Record<string, SelectorOption[]> = {
     { value: '', label: 'all' },
     { value: 'graph', label: 'graph' },
     { value: 'sorting', label: 'sorting' },
-    { value: 'searching', label: 'searching' }
+    { value: 'searching', label: 'searching' },
+    { value: 'stack', label: 'stack' }
   ],
   leetcode: [
     { value: '', label: 'all' },
     { value: 'array', label: 'array' },
     { value: 'string', label: 'string' },
     { value: 'linked-list', label: 'linked list' },
-    { value: 'dynamic-programming', label: 'dp' }
+    { value: 'dynamic-programming', label: 'dp' },
+    { value: 'design', label: 'design' },
+    { value: 'graph', label: 'graph' }
   ]
 }
 
@@ -42,6 +45,7 @@ export const difficultyOptions: SelectorOption[] = [
 ]
 
 export const lineSizeOptions: SelectorOption<number>[] = [
+  { value: 1, label: '1' },
   { value: 5, label: '5' },
   { value: 10, label: '10' },
   { value: 20, label: '20' },
@@ -61,5 +65,11 @@ export const knownTags = [
   'dynamic-programming', 'math', 'linked-list', 'design-pattern',
   'metaprogramming', 'functional', 'generics', 'type-system',
   'memory-management', 'raii', 'middleware', 'error-handling', 'web',
-  'async', 'validation', 'data-structure', 'kernel'
+  'async', 'validation', 'data-structure', 'kernel',
+  'matrix', 'list-comprehension', 'lambda', 'memoization', 'collections',
+  'generator', 'iterator', 'sliding-window', 'flood-fill', 'dfs',
+  'higher-order', 'timer', 'concurrency', 'discriminated-union',
+  'design', 'ranges', 'c++20', 'lazy-evaluation', 'optional', 'c++17',
+  'template', 'monotonic-stack', 'modular-arithmetic', 'bit-manipulation',
+  'constexpr', 'numeric', 'fold', 'utility'
 ] as const

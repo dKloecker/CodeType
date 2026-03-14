@@ -1,0 +1,14 @@
+{
+  "id": "coin-change.python",
+  "slug": "coin-change",
+  "title": "Coin Change",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "dynamic-programming",
+  "tags": ["dynamic-programming", "array", "greedy"],
+  "lines": 7,
+  "difficulty": "intermediate",
+  "source": "LeetCode #322",
+  "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for x in range(coin, amount + 1):\n            dp[x] = min(dp[x], dp[x - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+  "description": "Bottom-up DP where `dp[i]` holds the minimum coins needed to make amount `i`. For each coin, update all reachable amounts. Starting `dp[0] = 0` seeds the recurrence. **O(amount × coins)** time."
+}

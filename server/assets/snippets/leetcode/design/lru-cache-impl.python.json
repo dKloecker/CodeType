@@ -1,0 +1,14 @@
+{
+  "id": "lru-cache-impl.python",
+  "slug": "lru-cache-impl",
+  "title": "LRU Cache",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "design",
+  "tags": ["hash-map", "data-structure", "design"],
+  "lines": 17,
+  "difficulty": "intermediate",
+  "source": "LeetCode #146",
+  "code": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cache: OrderedDict[int, int] = OrderedDict()\n        self.capacity = capacity\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        self.cache[key] = value\n        self.cache.move_to_end(key)\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+  "description": "`OrderedDict` maintains insertion order and supports `move_to_end` in **O(1)**. On every `get` or `put`, the key is moved to the end (most-recently-used). When capacity is exceeded, `popitem(last=False)` evicts the front (least-recently-used)."
+}

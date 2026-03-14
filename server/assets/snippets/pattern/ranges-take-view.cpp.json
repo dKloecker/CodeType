@@ -1,0 +1,12 @@
+{
+  "id": "ranges-take-view.cpp",
+  "slug": "ranges-take-view",
+  "title": "Ranges Take View",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["ranges", "c++20", "lazy-evaluation", "stl"],
+  "lines": 4,
+  "difficulty": "intermediate",
+  "code": "#include <ranges>\nauto top5 = nums\n    | std::views::filter([](int x){ return x > 0; })\n    | std::views::take(5);",
+  "description": "Chains `filter` and `take` to lazily extract the first 5 positive numbers without allocating any intermediate storage. `std::views::take(n)` short-circuits iteration once `n` elements are consumed, making this efficient even on large ranges."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "pipe-fn.typescript",
+  "slug": "pipe-fn",
+  "title": "Function Pipe",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["functional", "generics", "higher-order"],
+  "lines": 1,
+  "difficulty": "intermediate",
+  "code": "const pipe = <T>(...fns: ((x: T) => T)[]) => (x: T): T => fns.reduce((v, f) => f(v), x)",
+  "description": "Creates a left-to-right function pipeline using rest parameters and `reduce`. Each function receives the output of the previous one. The generic `T` enforces that every function in the pipe shares the same input/output type."
+}

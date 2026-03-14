@@ -1,0 +1,12 @@
+{
+  "id": "transpose-matrix.python",
+  "slug": "transpose-matrix",
+  "title": "Transpose Matrix",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["array", "matrix", "functional"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "transposed = list(map(list, zip(*matrix)))",
+  "description": "Unpacks `matrix` rows as arguments to `zip`, which pairs up column elements across rows. `map(list, ...)` converts each zip tuple back to a list. A classic use of Python's argument unpacking and lazy iterators."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "cached-fibonacci.python",
+  "slug": "cached-fibonacci",
+  "title": "Memoised Fibonacci",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["dynamic-programming", "recursion", "memoization"],
+  "lines": 4,
+  "difficulty": "beginner",
+  "code": "from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n: int) -> int:\n    return n if n < 2 else fib(n - 1) + fib(n - 2)",
+  "description": "`@lru_cache` automatically caches return values keyed by arguments. With `maxsize=None` it grows unboundedly. Transforms naive **O(2^n)** recursive Fibonacci into **O(n)** by storing previously computed sub-results."
+}

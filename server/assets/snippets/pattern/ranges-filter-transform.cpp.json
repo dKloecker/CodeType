@@ -1,0 +1,12 @@
+{
+  "id": "ranges-filter-transform.cpp",
+  "slug": "ranges-filter-transform",
+  "title": "Ranges Filter & Transform",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["ranges", "functional", "c++20", "lazy-evaluation"],
+  "lines": 1,
+  "difficulty": "intermediate",
+  "code": "auto even_squares = nums | std::views::filter([](int x){ return x % 2 == 0; }) | std::views::transform([](int x){ return x * x; });",
+  "description": "C++20 range adaptors compose via `|` like Unix pipes. Both `filter` and `transform` are **lazy** — they produce a view object and only evaluate elements when iterated. No intermediate containers are created, making this both concise and memory-efficient."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "async-retry.typescript",
+  "slug": "async-retry",
+  "title": "Async Retry",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["async", "error-handling", "utility"],
+  "lines": 9,
+  "difficulty": "intermediate",
+  "code": "async function retry<T>(fn: () => Promise<T>, attempts: number, delayMs = 0): Promise<T> {\n  for (let i = 0; i < attempts; i++) {\n    try { return await fn() }\n    catch (err) {\n      if (i === attempts - 1) throw err\n      if (delayMs) await new Promise(r => setTimeout(r, delayMs))\n    }\n  }\n  throw new Error('unreachable')\n}",
+  "description": "Retries an async operation up to `attempts` times, re-throwing on the final failure. The optional `delayMs` adds a pause between retries — useful for rate-limited APIs or transient network errors. The final `throw` satisfies TypeScript's control-flow analysis."
+}

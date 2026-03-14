@@ -1,0 +1,12 @@
+{
+  "id": "once.typescript",
+  "slug": "once",
+  "title": "Call Once",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["utility", "higher-order", "functional"],
+  "lines": 4,
+  "difficulty": "intermediate",
+  "code": "function once<T extends (...args: unknown[]) => unknown>(fn: T): T {\n  let called = false, result: ReturnType<T>\n  return ((...args: Parameters<T>) => { if (!called) { called = true; result = fn(...args) as ReturnType<T> } return result }) as T\n}",
+  "description": "Returns a wrapper that invokes `fn` exactly once and caches the result. Subsequent calls return the cached value without calling `fn` again. Useful for lazy initialisation, one-time event handlers, and expensive setup code."
+}

@@ -2,8 +2,12 @@ import type { Snippet } from '~~/server/types/snippet'
 
 let cachedSnippets: Snippet[] | null = null
 
+export function invalidateSnippetCache() {
+  cachedSnippets = null
+}
+
 export async function loadAllSnippets(): Promise<Snippet[]> {
-  if (cachedSnippets) return cachedSnippets
+  if (cachedSnippets && process.env.NODE_ENV === 'production') return cachedSnippets
 
   const storage = useStorage('assets:server')
   const snippets: Snippet[] = []

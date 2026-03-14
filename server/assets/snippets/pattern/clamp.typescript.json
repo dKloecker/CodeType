@@ -1,0 +1,12 @@
+{
+  "id": "clamp.typescript",
+  "slug": "clamp",
+  "title": "Clamp Number",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["math", "utility", "functional"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max)",
+  "description": "Constrains a value to a `[min, max]` range in a single expression. `Math.max(value, min)` lifts values below the floor; `Math.min(..., max)` caps values above the ceiling. A fundamental utility in animation, UI, and game programming."
+}

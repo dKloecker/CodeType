@@ -1,0 +1,12 @@
+{
+  "id": "sort-by-second.cpp",
+  "slug": "sort-by-second",
+  "title": "Sort Pairs by Second Element",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["sorting", "lambda", "stl"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "std::sort(pairs.begin(), pairs.end(), [](const auto& a, const auto& b){ return a.second < b.second; });",
+  "description": "Passes a lambda as the comparator to `std::sort` to order pairs by their second element. `const auto&` uses C++14 generic lambdas to avoid spelling out the pair type. `std::sort` runs in **O(n log n)** using introsort internally."
+}

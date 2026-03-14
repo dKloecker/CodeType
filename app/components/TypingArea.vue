@@ -5,6 +5,7 @@ const props = defineProps<{
   flatChars: CharState[]
   cursorIndex: number
   loading: boolean
+  noResults?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -103,7 +104,15 @@ const snippetCssVars = computed(() => ({
     </div>
 
     <div
-      v-else
+      v-else-if="noResults"
+      class="py-12 text-center text-sm"
+      style="color: var(--text-muted)"
+    >
+      no snippets match this filter
+    </div>
+
+    <div
+      v-else-if="!noResults"
       ref="scrollContainer"
       class="typing-scroll w-full max-w-3xl max-h-[60vh] overflow-y-auto overflow-x-auto"
       :style="snippetCssVars"

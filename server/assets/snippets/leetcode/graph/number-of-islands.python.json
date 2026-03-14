@@ -1,0 +1,14 @@
+{
+  "id": "number-of-islands.python",
+  "slug": "number-of-islands",
+  "title": "Number of Islands",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "graph",
+  "tags": ["graph", "dfs", "matrix", "flood-fill"],
+  "lines": 16,
+  "difficulty": "intermediate",
+  "source": "LeetCode #200",
+  "code": "def num_islands(grid: list[list[str]]) -> int:\n    if not grid:\n        return 0\n    rows, cols = len(grid), len(grid[0])\n\n    def dfs(r: int, c: int) -> None:\n        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1':\n            return\n        grid[r][c] = '0'\n        dfs(r + 1, c); dfs(r - 1, c); dfs(r, c + 1); dfs(r, c - 1)\n\n    count = 0\n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                dfs(r, c)\n                count += 1\n    return count",
+  "description": "For each unvisited land cell (`'1'`), run a DFS that marks all connected land cells as visited (`'0'`) — a flood fill. Each DFS call represents one island. **O(m × n)** time and space where m, n are the grid dimensions."
+}

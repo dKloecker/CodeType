@@ -1,0 +1,13 @@
+{
+  "id": "next-greater-element.cpp",
+  "slug": "next-greater-element",
+  "title": "Next Greater Element",
+  "language": "cpp",
+  "category": "algorithm",
+  "subcategory": "stack",
+  "tags": ["stack", "array", "monotonic-stack"],
+  "lines": 12,
+  "difficulty": "intermediate",
+  "code": "std::vector<int> next_greater(const std::vector<int>& nums) {\n    int n = nums.size();\n    std::vector<int> result(n, -1);\n    std::stack<int> st;\n    for (int i = 0; i < n; i++) {\n        while (!st.empty() && nums[st.top()] < nums[i]) {\n            result[st.top()] = nums[i];\n            st.pop();\n        }\n        st.push(i);\n    }\n    return result;\n}",
+  "description": "A monotonic stack maintains indices of elements in increasing order. When a larger element arrives, it resolves all pending smaller elements on the stack. Any indices remaining after the loop have no greater element — they stay `-1`. **O(n)** time: each element is pushed and popped at most once."
+}

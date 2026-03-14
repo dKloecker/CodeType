@@ -1,0 +1,12 @@
+{
+  "id": "reduce-factorial.python",
+  "slug": "reduce-factorial",
+  "title": "Factorial via reduce",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["functional", "math", "lambda"],
+  "lines": 1,
+  "difficulty": "beginner",
+  "code": "from functools import reduce; factorial = lambda n: reduce(lambda a, b: a * b, range(1, n + 1), 1)",
+  "description": "`reduce` folds a sequence into a single value by repeatedly applying a binary function. Here it computes `1 * 2 * 3 * ... * n`. The initial value `1` handles `n=0` correctly, returning 1."
+}

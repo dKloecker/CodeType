@@ -1,0 +1,13 @@
+{
+  "id": "sliding-window-sum.python",
+  "slug": "sliding-window-sum",
+  "title": "Sliding Window Maximum Sum",
+  "language": "python",
+  "category": "algorithm",
+  "subcategory": "searching",
+  "tags": ["sliding-window", "array", "dynamic-programming"],
+  "lines": 7,
+  "difficulty": "intermediate",
+  "code": "def max_sum_subarray(nums: list[int], k: int) -> int:\n    window = sum(nums[:k])\n    best = window\n    for i in range(k, len(nums)):\n        window += nums[i] - nums[i - k]\n        best = max(best, window)\n    return best",
+  "description": "The sliding window technique maintains a running sum by adding the incoming element and subtracting the outgoing one, avoiding recomputing the full window each step. Reduces brute-force **O(nk)** to **O(n)**."
+}

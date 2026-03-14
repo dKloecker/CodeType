@@ -1,0 +1,12 @@
+{
+  "id": "scope-exit.cpp",
+  "slug": "scope-exit",
+  "title": "Scope Exit Guard",
+  "language": "cpp",
+  "category": "pattern",
+  "tags": ["raii", "resource-management", "template", "c++11"],
+  "lines": 9,
+  "difficulty": "intermediate",
+  "code": "template<typename F>\nstruct ScopeExit {\n    F fn;\n    ScopeExit(F f) : fn(std::move(f)) {}\n    ~ScopeExit() { fn(); }\n};\n\ntemplate<typename F>\nScopeExit<F> make_scope_exit(F f) { return ScopeExit<F>(std::move(f)); }",
+  "description": "A RAII guard that runs a callable when it goes out of scope — regardless of whether the scope exits normally or via exception. Useful for cleanup that does not fit a dedicated destructor (e.g. unlocking a C handle, restoring state). C++23 standardises this as `std::scope_exit`."
+}
