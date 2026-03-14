@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const category = ref<string[]>([])
 const language = ref<string[]>([])
-const lineCount = ref(10)
+const lineCount = ref(20)
 const mode = ref<'until-finished' | 'timed'>('until-finished')
 const timedDuration = ref<10 | 30 | 60>(30)
 const subcategory = ref('')

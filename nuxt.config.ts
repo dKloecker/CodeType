@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'CodeType',
+      title: 'BufferType',
       link: [
         {
           rel: 'preconnect',

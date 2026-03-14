@@ -138,6 +138,13 @@ export function useTypingEngine(
   watch(snippet, (s) => {
     if (s) {
       initialize(s.code, s.language)
+    } else {
+      finished.value = false
+      ready.value = false
+      flatChars.value = []
+      cursorIndex.value = 0
+      startTime.value = null
+      errors.value = new Set()
     }
   }, { immediate: true })
 

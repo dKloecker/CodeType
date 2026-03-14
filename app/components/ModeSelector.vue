@@ -10,7 +10,7 @@ import {
 
 const language = defineModel<string[]>('language', { default: () => [] })
 const category = defineModel<string[]>('category', { default: () => [] })
-const lineCount = defineModel<number>('lineCount', { default: 10 })
+const lineCount = defineModel<number>('lineCount', { default: 20 })
 const mode = defineModel<'until-finished' | 'timed'>('mode', { default: 'until-finished' })
 const timedDuration = defineModel<10 | 30 | 60>('timedDuration', { default: 30 })
 const subcategory = defineModel<string>('subcategory', { default: '' })
