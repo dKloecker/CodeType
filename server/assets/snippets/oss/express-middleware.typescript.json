@@ -1,8 +1,12 @@
 {
   "id": "express-middleware.typescript",
+  "slug": "express-middleware",
   "title": "Express Middleware",
-  "category": "oss",
   "language": "typescript",
+  "category": "oss",
+  "tags": ["middleware", "error-handling", "web"],
   "lines": 18,
-  "code": "import { Request, Response, NextFunction } from \"express\";\n\ninterface AppError extends Error {\n  statusCode: number;\n}\n\nfunction errorHandler(\n  err: AppError,\n  req: Request,\n  res: Response,\n  next: NextFunction\n): void {\n  const status = err.statusCode || 500;\n  res.status(status).json({\n    error: err.message,\n    path: req.originalUrl,\n  });\n}"
+  "difficulty": "intermediate",
+  "code": "import { Request, Response, NextFunction } from \"express\";\n\ninterface AppError extends Error {\n  statusCode: number;\n}\n\nfunction errorHandler(\n  err: AppError,\n  req: Request,\n  res: Response,\n  next: NextFunction\n): void {\n  const status = err.statusCode || 500;\n  res.status(status).json({\n    error: err.message,\n    path: req.originalUrl,\n  });\n}",
+  "description": "Express error-handling middleware with a typed `AppError` interface. The four-parameter signature `(err, req, res, next)` tells Express this is an error handler. Falls back to 500 if no status code is set."
 }

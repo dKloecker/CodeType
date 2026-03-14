@@ -1,8 +1,0 @@
-{
-  "id": "reverse-linked-list.python",
-  "title": "Reverse Linked List",
-  "category": "leetcode",
-  "language": "python",
-  "lines": 14,
-  "code": "class ListNode:\n    def __init__(self, val: int = 0, next: \"ListNode | None\" = None):\n        self.val = val\n        self.next = next\n\ndef reverse_list(head: ListNode | None) -> ListNode | None:\n    prev: ListNode | None = None\n    curr = head\n    while curr:\n        next_node = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_node\n    return prev"
-}

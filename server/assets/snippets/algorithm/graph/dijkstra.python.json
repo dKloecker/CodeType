@@ -1,0 +1,13 @@
+{
+  "id": "dijkstra.python",
+  "slug": "dijkstra",
+  "title": "Dijkstra's Algorithm",
+  "language": "python",
+  "category": "algorithm",
+  "subcategory": "graph",
+  "tags": ["graph", "shortest-path", "greedy", "heap"],
+  "lines": 16,
+  "difficulty": "intermediate",
+  "code": "import heapq\nfrom collections import defaultdict\n\ndef dijkstra(graph: dict[int, list[tuple[int, int]]], start: int) -> dict[int, int]:\n    dist: dict[int, int] = {start: 0}\n    heap: list[tuple[int, int]] = [(0, start)]\n    while heap:\n        cost, node = heapq.heappop(heap)\n        if cost > dist.get(node, float(\"inf\")):\n            continue\n        for neighbor, weight in graph[node]:\n            new_cost = cost + weight\n            if new_cost < dist.get(neighbor, float(\"inf\")):\n                dist[neighbor] = new_cost\n                heapq.heappush(heap, (new_cost, neighbor))\n    return dist",
+  "description": "Finds shortest paths from a source node to all reachable nodes in a weighted graph using a min-heap. The key insight is the **greedy relaxation**: once a node is popped with minimum cost, its shortest distance is finalized. Runs in **O((V + E) log V)** time."
+}

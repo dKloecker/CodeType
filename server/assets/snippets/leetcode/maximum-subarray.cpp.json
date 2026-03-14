@@ -1,8 +1,0 @@
-{
-  "id": "maximum-subarray.cpp",
-  "title": "Maximum Subarray",
-  "category": "leetcode",
-  "language": "cpp",
-  "lines": 13,
-  "code": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint maxSubArray(vector<int>& nums) {\n    int maxSum = nums[0];\n    int currentSum = nums[0];\n    for (int i = 1; i < nums.size(); i++) {\n        currentSum = max(nums[i], currentSum + nums[i]);\n        maxSum = max(maxSum, currentSum);\n    }\n    return maxSum;\n}"
-}

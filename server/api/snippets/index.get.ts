@@ -1,58 +1,58 @@
-interface Snippet {
-  id: string
-  title: string
-  category: string
-  language: string
-  lines: number
-  code: string
-}
-
-async function loadAllSnippets(): Promise<Snippet[]> {
-  const storage = useStorage('assets:server')
-  const snippets: Snippet[] = []
-
-  const keys = await storage.getKeys('snippets')
-  for (const key of keys) {
-    if (!key.endsWith('.json')) continue
-    const data = await storage.getItem(key)
-    if (data) {
-      snippets.push(data as Snippet)
-    }
-  }
-
-  return snippets
-}
+import type { Snippet } from '~~/server/types/snippet'
+import { loadAllSnippets } from '~~/server/utils/snippets'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const category = query.category as string | undefined
   const language = query.language as string | undefined
-  const lines = query.lines ? Number(query.lines) : undefined
+  const category = query.category as string | undefined
+  const subcategory = query.subcategory as string | undefined
+  const tags = query.tags as string | undefined
+  const maxLines = query.maxLines ? Number(query.maxLines) : undefined
+  const difficulty = query.difficulty as string | undefined
+  const slug = query.slug as string | undefined
+  const excludeId = query.excludeId as string | undefined
 
   let snippets = await loadAllSnippets()
 
+  if (slug) {
+    snippets = snippets.filter(s => s.slug === slug)
+  }
+
   if (category) {
-    snippets = snippets.filter(s => s.category === category)
+    const cats = category.split(',')
+    snippets = snippets.filter(s => cats.includes(s.category))
   }
 
   if (language) {
-    snippets = snippets.filter(s => s.language === language)
+    const langs = language.split(',')
+    snippets = snippets.filter(s => langs.includes(s.language))
+  }
+
+  if (subcategory) {
+    snippets = snippets.filter(s => s.subcategory === subcategory)
+  }
+
+  if (tags) {
+    const tagList = tags.split(',')
+    snippets = snippets.filter(s => s.tags.some(t => tagList.includes(t)))
+  }
+
+  if (maxLines) {
+    snippets = snippets.filter(s => s.lines <= maxLines)
+  }
+
+  if (difficulty) {
+    snippets = snippets.filter(s => s.difficulty === difficulty)
+  }
+
+  if (excludeId) {
+    snippets = snippets.filter(s => s.id !== excludeId)
   }
 
   if (snippets.length === 0) {
     return { snippet: null }
   }
 
-  if (lines) {
-    // Find snippets closest to the requested line count
-    const sorted = [...snippets].sort(
-      (a, b) => Math.abs(a.lines - lines) - Math.abs(b.lines - lines)
-    )
-    const closestDistance = Math.abs(sorted[0]!.lines - lines)
-    // Keep all snippets tied for closest match
-    snippets = sorted.filter(s => Math.abs(s.lines - lines) === closestDistance)
-  }
-
   const randomIndex = Math.floor(Math.random() * snippets.length)
-  return { snippet: snippets[randomIndex] }
+  return { snippet: snippets[randomIndex] as Snippet }
 })

@@ -1,8 +1,0 @@
-{
-  "id": "dijkstra.python",
-  "title": "Dijkstra's Algorithm",
-  "category": "algorithm",
-  "language": "python",
-  "lines": 16,
-  "code": "import heapq\nfrom collections import defaultdict\n\ndef dijkstra(graph: dict[int, list[tuple[int, int]]], start: int) -> dict[int, int]:\n    dist: dict[int, int] = {start: 0}\n    heap: list[tuple[int, int]] = [(0, start)]\n    while heap:\n        cost, node = heapq.heappop(heap)\n        if cost > dist.get(node, float(\"inf\")):\n            continue\n        for neighbor, weight in graph[node]:\n            new_cost = cost + weight\n            if new_cost < dist.get(neighbor, float(\"inf\")):\n                dist[neighbor] = new_cost\n                heapq.heappush(heap, (new_cost, neighbor))\n    return dist"
-}

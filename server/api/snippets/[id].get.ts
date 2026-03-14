@@ -1,24 +1,13 @@
-interface Snippet {
-  id: string
-  title: string
-  category: string
-  language: string
-  lines: number
-  code: string
-}
+import { loadAllSnippets } from '~~/server/utils/snippets'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  const storage = useStorage('assets:server')
+  const snippets = await loadAllSnippets()
+  const snippet = snippets.find(s => s.id === id)
 
-  const keys = await storage.getKeys('snippets')
-  for (const key of keys) {
-    if (!key.endsWith('.json')) continue
-    const data = await storage.getItem(key) as Snippet | null
-    if (data && data.id === id) {
-      return { snippet: data }
-    }
+  if (!snippet) {
+    throw createError({ statusCode: 404, message: `Snippet '${id}' not found` })
   }
 
-  throw createError({ statusCode: 404, message: `Snippet '${id}' not found` })
+  return { snippet }
 })

@@ -1,0 +1,14 @@
+{
+  "id": "valid-parentheses.python",
+  "slug": "valid-parentheses",
+  "title": "Valid Parentheses",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "string",
+  "tags": ["stack", "string"],
+  "lines": 11,
+  "difficulty": "beginner",
+  "source": "LeetCode #20",
+  "code": "def is_valid(s: str) -> bool:\n    stack: list[str] = []\n    pairs = {\")\": \"(\", \"}\": \"{\", \"]\": \"[\"}\n    for char in s:\n        if char in pairs:\n            if not stack or stack[-1] != pairs[char]:\n                return False\n            stack.pop()\n        else:\n            stack.append(char)\n    return len(stack) == 0",
+  "description": "Uses a stack to match opening and closing brackets. A closing bracket must match the most recent unmatched opener (LIFO). **O(n)** time with a dictionary for bracket pair lookup."
+}

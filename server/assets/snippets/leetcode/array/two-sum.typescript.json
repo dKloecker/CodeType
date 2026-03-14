@@ -1,0 +1,14 @@
+{
+  "id": "two-sum.typescript",
+  "slug": "two-sum",
+  "title": "Two Sum",
+  "language": "typescript",
+  "category": "leetcode",
+  "subcategory": "array",
+  "tags": ["hash-map", "array"],
+  "lines": 11,
+  "difficulty": "beginner",
+  "source": "LeetCode #1",
+  "code": "function twoSum(nums: number[], target: number): number[] {\n  const seen = new Map<number, number>();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (seen.has(complement)) {\n      return [seen.get(complement)!, i];\n    }\n    seen.set(nums[i], i);\n  }\n  return [];\n}",
+  "description": "TypeScript solution using `Map` for O(1) lookups. The complement-check pattern avoids a nested loop. **O(n)** time and space."
+}

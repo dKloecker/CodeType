@@ -1,0 +1,14 @@
+{
+  "id": "two-sum.python",
+  "slug": "two-sum",
+  "title": "Two Sum",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "array",
+  "tags": ["hash-map", "array"],
+  "lines": 8,
+  "difficulty": "beginner",
+  "source": "LeetCode #1",
+  "code": "def two_sum(nums: list[int], target: int) -> list[int]:\n    seen: dict[int, int] = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+  "description": "Uses a hash map to find two numbers that add up to a target in a single pass. For each element, check if its complement already exists in the map. **O(n)** time and space."
+}

@@ -1,0 +1,14 @@
+{
+  "id": "maximum-subarray.cpp",
+  "slug": "maximum-subarray",
+  "title": "Maximum Subarray",
+  "language": "cpp",
+  "category": "leetcode",
+  "subcategory": "array",
+  "tags": ["dynamic-programming", "array", "greedy"],
+  "lines": 13,
+  "difficulty": "intermediate",
+  "source": "LeetCode #53",
+  "code": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint maxSubArray(vector<int>& nums) {\n    int maxSum = nums[0];\n    int currentSum = nums[0];\n    for (int i = 1; i < nums.size(); i++) {\n        currentSum = max(nums[i], currentSum + nums[i]);\n        maxSum = max(maxSum, currentSum);\n    }\n    return maxSum;\n}",
+  "description": "Kadane's algorithm finds the maximum-sum contiguous subarray in one pass. At each step, decide whether to extend the current subarray or start fresh. **O(n)** time, **O(1)** space."
+}

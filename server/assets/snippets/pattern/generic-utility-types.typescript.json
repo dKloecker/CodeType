@@ -1,0 +1,12 @@
+{
+  "id": "generic-utility-types.typescript",
+  "slug": "generic-utility-types",
+  "title": "TypeScript Generic Utility Types",
+  "language": "typescript",
+  "category": "pattern",
+  "tags": ["generics", "type-system"],
+  "lines": 18,
+  "difficulty": "advanced",
+  "code": "type DeepPartial<T> = {\n  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];\n};\n\ntype DeepReadonly<T> = {\n  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];\n};\n\ninterface User {\n  name: string;\n  address: {\n    street: string;\n    city: string;\n  };\n}\n\nconst partial: DeepPartial<User> = { address: { city: \"NYC\" } };\nconst frozen: DeepReadonly<User> = { name: \"Al\", address: { street: \"1st\", city: \"NYC\" } };",
+  "description": "Recursive mapped types that apply `Partial` or `Readonly` to every nested level of an object type. The conditional `extends object` check handles the recursion base case. A powerful pattern for config and state management types."
+}

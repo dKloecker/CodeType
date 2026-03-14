@@ -1,8 +1,12 @@
 {
   "id": "linux-list.cpp",
+  "slug": "linux-list",
   "title": "Linux Kernel-Style Linked List",
-  "category": "oss",
   "language": "cpp",
+  "category": "oss",
+  "tags": ["data-structure", "kernel", "memory-management"],
   "lines": 21,
-  "code": "#include <cstddef>\n\nstruct list_head {\n    list_head* next;\n    list_head* prev;\n};\n\nvoid list_init(list_head* head) {\n    head->next = head;\n    head->prev = head;\n}\n\nvoid list_add(list_head* entry, list_head* head) {\n    entry->next = head->next;\n    entry->prev = head;\n    head->next->prev = entry;\n    head->next = entry;\n}\n\n#define LIST_ENTRY(ptr, type, member) \\\n    ((type*)((char*)(ptr) - offsetof(type, member)))"
+  "difficulty": "advanced",
+  "code": "#include <cstddef>\n\nstruct list_head {\n    list_head* next;\n    list_head* prev;\n};\n\nvoid list_init(list_head* head) {\n    head->next = head;\n    head->prev = head;\n}\n\nvoid list_add(list_head* entry, list_head* head) {\n    entry->next = head->next;\n    entry->prev = head;\n    head->next->prev = entry;\n    head->next = entry;\n}\n\n#define LIST_ENTRY(ptr, type, member) \\\n    ((type*)((char*)(ptr) - offsetof(type, member)))",
+  "description": "The Linux kernel's intrusive linked list pattern — the list node is embedded inside the data struct, and `LIST_ENTRY` (container_of) recovers the outer struct from a node pointer using `offsetof`. Enables a single list implementation for any data type."
 }

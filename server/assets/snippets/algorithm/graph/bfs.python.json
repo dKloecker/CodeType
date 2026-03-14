@@ -1,0 +1,13 @@
+{
+  "id": "bfs.python",
+  "slug": "bfs",
+  "title": "Breadth-First Search",
+  "language": "python",
+  "category": "algorithm",
+  "subcategory": "graph",
+  "tags": ["graph", "traversal", "queue"],
+  "lines": 15,
+  "difficulty": "intermediate",
+  "code": "from collections import deque\n\ndef bfs(graph: dict[int, list[int]], start: int) -> list[int]:\n    visited: set[int] = set()\n    queue: deque[int] = deque([start])\n    visited.add(start)\n    order: list[int] = []\n    while queue:\n        node = queue.popleft()\n        order.append(node)\n        for neighbor in graph[node]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return order",
+  "description": "Explores a graph level-by-level using a FIFO queue. Nodes are marked visited **before** enqueueing to avoid duplicates. Runs in **O(V + E)** time and is the foundation for shortest-path in unweighted graphs."
+}

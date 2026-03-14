@@ -1,0 +1,13 @@
+{
+  "id": "merge-sort.typescript",
+  "slug": "merge-sort",
+  "title": "Merge Sort",
+  "language": "typescript",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": ["sorting", "divide-and-conquer", "recursion"],
+  "lines": 23,
+  "difficulty": "intermediate",
+  "code": "function mergeSort(arr: number[]): number[] {\n  if (arr.length <= 1) return arr;\n  const mid = Math.floor(arr.length / 2);\n  const left = mergeSort(arr.slice(0, mid));\n  const right = mergeSort(arr.slice(mid));\n  return merge(left, right);\n}\n\nfunction merge(left: number[], right: number[]): number[] {\n  const result: number[] = [];\n  let i = 0;\n  let j = 0;\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) {\n      result.push(left[i]);\n      i++;\n    } else {\n      result.push(right[j]);\n      j++;\n    }\n  }\n  return [...result, ...left.slice(i), ...right.slice(j)];\n}",
+  "description": "TypeScript merge sort with spread syntax for concatenating remaining elements. The stable sort preserves equal-element order. Guaranteed **O(n log n)** time with **O(n)** extra space."
+}

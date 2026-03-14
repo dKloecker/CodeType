@@ -1,8 +1,0 @@
-{
-  "id": "valid-parentheses.python",
-  "title": "Valid Parentheses",
-  "category": "leetcode",
-  "language": "python",
-  "lines": 11,
-  "code": "def is_valid(s: str) -> bool:\n    stack: list[str] = []\n    pairs = {\")\": \"(\", \"}\": \"{\", \"]\": \"[\"}\n    for char in s:\n        if char in pairs:\n            if not stack or stack[-1] != pairs[char]:\n                return False\n            stack.pop()\n        else:\n            stack.append(char)\n    return len(stack) == 0"
-}

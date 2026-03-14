@@ -1,0 +1,12 @@
+{
+  "id": "decorator-pattern.python",
+  "slug": "decorator-pattern",
+  "title": "Python Decorator Pattern",
+  "language": "python",
+  "category": "pattern",
+  "tags": ["design-pattern", "metaprogramming", "functional"],
+  "lines": 17,
+  "difficulty": "intermediate",
+  "code": "import functools\nimport time\nfrom typing import Callable, Any\n\ndef timer(func: Callable[..., Any]) -> Callable[..., Any]:\n    @functools.wraps(func)\n    def wrapper(*args: Any, **kwargs: Any) -> Any:\n        start = time.perf_counter()\n        result = func(*args, **kwargs)\n        elapsed = time.perf_counter() - start\n        print(f\"{func.__name__} took {elapsed:.4f}s\")\n        return result\n    return wrapper\n\n@timer\ndef slow_function(n: int) -> int:\n    return sum(range(n))",
+  "description": "A timing decorator that wraps any function to measure execution time. `functools.wraps` preserves the original function's name and docstring. Demonstrates Python's first-class function support and closure pattern."
+}

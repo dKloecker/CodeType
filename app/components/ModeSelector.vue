@@ -2,17 +2,21 @@
 import {
   languageOptions,
   categoryOptions,
+  subcategoryMap,
+  difficultyOptions,
   lineSizeOptions,
   timedDurationOptions
 } from '~/config/selectors'
 
-const language = defineModel<string>('language', { default: '' })
-const category = defineModel<string>('category', { default: 'algorithm' })
+const language = defineModel<string[]>('language', { default: () => [] })
+const category = defineModel<string[]>('category', { default: () => [] })
 const lineCount = defineModel<number>('lineCount', { default: 10 })
 const mode = defineModel<'until-finished' | 'timed'>('mode', { default: 'until-finished' })
 const timedDuration = defineModel<10 | 30 | 60>('timedDuration', { default: 30 })
+const subcategory = defineModel<string>('subcategory', { default: '' })
+const difficulty = defineModel<string>('difficulty', { default: '' })
 
-type SectionKey = 'language' | 'category' | 'size' | 'mode'
+type SectionKey = 'language' | 'category' | 'subcategory' | 'difficulty' | 'size' | 'mode'
 
 const openSection = ref<SectionKey | null>(null)
 
@@ -22,6 +26,31 @@ function toggle(key: SectionKey) {
 
 function isOpen(key: SectionKey) {
   return openSection.value === key
+}
+
+function selectLanguage(value: string) {
+  if (value === '') {
+    language.value = []
+  } else if (language.value.includes(value)) {
+    language.value = language.value.filter(v => v !== value)
+  } else {
+    language.value = [...language.value, value]
+  }
+}
+
+function selectCategory(value: string) {
+  if (value === '') {
+    category.value = []
+  } else if (category.value.includes(value)) {
+    category.value = category.value.filter(v => v !== value)
+  } else {
+    category.value = [...category.value, value]
+  }
+}
+
+function isMultiSelected(arr: string[], value: string) {
+  if (value === '') return arr.length === 0
+  return arr.includes(value)
 }
 
 function setMode(m: 'until-finished' | 'timed', dur?: 10 | 30 | 60) {
@@ -35,26 +64,46 @@ const modeLabel = computed(() => {
   return opt?.label ?? `${timedDuration.value}s`
 })
 
-const selectedLanguageLabel = computed(() =>
-  languageOptions.find(o => o.value === language.value)?.label ?? 'random'
-)
-
-const containerRef = ref<HTMLElement | null>(null)
-
-function onClickOutside(e: MouseEvent) {
-  if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    openSection.value = null
+const languageLabel = computed(() => {
+  if (language.value.length === 0) return 'all'
+  if (language.value.length === 1) {
+    return languageOptions.find(o => o.value === language.value[0])?.label ?? language.value[0]
   }
+  return `${language.value.length} langs`
+})
+
+const categoryLabel = computed(() => {
+  if (category.value.length === 0) return 'all'
+  if (category.value.length === 1) {
+    return categoryOptions.find(o => o.value === category.value[0])?.label ?? category.value[0]
+  }
+  return `${category.value.length} cats`
+})
+
+const subcategoryOptions = computed(() => {
+  if (category.value.length === 1 && subcategoryMap[category.value[0]!]) {
+    return subcategoryMap[category.value[0]!]
+  }
+  return null
+})
+
+// Reset subcategory when categories change
+watch(category, () => {
+  subcategory.value = ''
+})
+
+function closeAll() {
+  openSection.value = null
 }
 
-onMounted(() => document.addEventListener('click', onClickOutside))
-onUnmounted(() => document.removeEventListener('click', onClickOutside))
+onMounted(() => document.addEventListener('click', closeAll))
+onUnmounted(() => document.removeEventListener('click', closeAll))
 </script>
 
 <template>
   <div
-    ref="containerRef"
     class="flex flex-col items-center w-full pt-4 pb-2 z-30 relative"
+    @click.stop
   >
     <BasePill class="text-[13px]">
       <!-- Language -->
@@ -67,7 +116,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-code-2"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span v-if="!isOpen('language')">{{ selectedLanguageLabel }}</span>
+        <span v-if="!isOpen('language')">{{ languageLabel }}</span>
       </button>
 
       <div
@@ -80,8 +129,8 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
             v-for="opt in languageOptions"
             :key="opt.value"
             class="pill-option"
-            :style="{ color: language === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-            @click="language = opt.value"
+            :style="{ color: isMultiSelected(language, opt.value) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="selectLanguage(opt.value)"
           >
             {{ opt.label }}
           </button>
@@ -100,7 +149,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
           name="i-lucide-layers"
           class="w-3.5 h-3.5 shrink-0"
         />
-        <span v-if="!isOpen('category')">{{ categoryOptions.find(o => o.value === category)?.label ?? category }}</span>
+        <span v-if="!isOpen('category')">{{ categoryLabel }}</span>
       </button>
 
       <div
@@ -113,8 +162,75 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
             v-for="opt in categoryOptions"
             :key="opt.value"
             class="pill-option"
-            :style="{ color: category === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-            @click="category = opt.value"
+            :style="{ color: isMultiSelected(category, opt.value) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="selectCategory(opt.value)"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Subcategory (dynamic, only when single category selected) -->
+      <template v-if="subcategoryOptions">
+        <span class="pill-sep">|</span>
+        <button
+          class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
+          :style="{ color: isOpen('subcategory') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+          @click="toggle('subcategory')"
+        >
+          <UIcon
+            name="i-lucide-git-branch"
+            class="w-3.5 h-3.5 shrink-0"
+          />
+          <span v-if="!isOpen('subcategory')">{{ subcategoryOptions.find(o => o.value === subcategory)?.label ?? 'all' }}</span>
+        </button>
+
+        <div
+          class="pill-expand"
+          :class="{ 'pill-expand--open': isOpen('subcategory') }"
+        >
+          <div class="pill-expand-inner flex items-center">
+            <span class="pill-sep">|</span>
+            <button
+              v-for="opt in subcategoryOptions"
+              :key="opt.value"
+              class="pill-option"
+              :style="{ color: subcategory === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+              @click="subcategory = opt.value"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+      </template>
+
+      <span class="pill-sep">|</span>
+
+      <!-- Difficulty -->
+      <button
+        class="pill-btn flex items-center gap-1.5 px-3 py-2 min-w-[2.25rem]"
+        :style="{ color: isOpen('difficulty') ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+        @click="toggle('difficulty')"
+      >
+        <UIcon
+          name="i-lucide-signal"
+          class="w-3.5 h-3.5 shrink-0"
+        />
+        <span v-if="!isOpen('difficulty')">{{ difficultyOptions.find(o => o.value === difficulty)?.label ?? 'all' }}</span>
+      </button>
+
+      <div
+        class="pill-expand"
+        :class="{ 'pill-expand--open': isOpen('difficulty') }"
+      >
+        <div class="pill-expand-inner flex items-center">
+          <span class="pill-sep">|</span>
+          <button
+            v-for="opt in difficultyOptions"
+            :key="opt.value"
+            class="pill-option"
+            :style="{ color: difficulty === opt.value ? 'var(--accent-primary)' : 'var(--text-muted)' }"
+            @click="difficulty = opt.value"
           >
             {{ opt.label }}
           </button>

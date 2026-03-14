@@ -1,0 +1,14 @@
+{
+  "id": "climbing-stairs.typescript",
+  "slug": "climbing-stairs",
+  "title": "Climbing Stairs",
+  "language": "typescript",
+  "category": "leetcode",
+  "subcategory": "dynamic-programming",
+  "tags": ["dynamic-programming", "recursion", "math"],
+  "lines": 11,
+  "difficulty": "beginner",
+  "source": "LeetCode #70",
+  "code": "function climbStairs(n: number): number {\n  if (n <= 2) return n;\n  let prev = 1;\n  let curr = 2;\n  for (let i = 3; i <= n; i++) {\n    const next = prev + curr;\n    prev = curr;\n    curr = next;\n  }\n  return curr;\n}",
+  "description": "Bottom-up DP that computes the Fibonacci-like number of ways to climb `n` stairs (1 or 2 steps at a time). Only two variables are needed instead of an array. **O(n)** time, **O(1)** space."
+}

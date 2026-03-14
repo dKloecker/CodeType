@@ -1,0 +1,14 @@
+{
+  "id": "reverse-linked-list.python",
+  "slug": "reverse-linked-list",
+  "title": "Reverse Linked List",
+  "language": "python",
+  "category": "leetcode",
+  "subcategory": "linked-list",
+  "tags": ["linked-list", "recursion"],
+  "lines": 14,
+  "difficulty": "intermediate",
+  "source": "LeetCode #206",
+  "code": "class ListNode:\n    def __init__(self, val: int = 0, next: \"ListNode | None\" = None):\n        self.val = val\n        self.next = next\n\ndef reverse_list(head: ListNode | None) -> ListNode | None:\n    prev: ListNode | None = None\n    curr = head\n    while curr:\n        next_node = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_node\n    return prev",
+  "description": "Iteratively reverses a singly linked list by re-pointing each node's `next` to its predecessor. Uses three pointers (`prev`, `curr`, `next_node`) and runs in **O(n)** time with **O(1)** space."
+}

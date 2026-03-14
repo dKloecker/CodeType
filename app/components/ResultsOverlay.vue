@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TimeSeriesPoint, ErrorEvent } from '~/composables/useMetrics'
+import type { Snippet } from '~~/server/types/snippet'
 
 const props = defineProps<{
   wpm: number
@@ -10,12 +11,16 @@ const props = defineProps<{
   errorCount: number
   timeSeries: TimeSeriesPoint[]
   errorEvents: ErrorEvent[]
+  snippet: Snippet | null
 }>()
 
 const emit = defineEmits<{
   restart: []
   next: []
+  tryLanguage: [language: string]
 }>()
+
+const showDescription = ref(false)
 
 // ── Tab+Enter restart ──
 let tabPressed = false
@@ -168,6 +173,24 @@ const consistency = computed(() => {
   // Consistency = 100% when stddev is 0, decreases with more variation
   const cv = mean > 0 ? stddev / mean : 0
   return Math.max(0, Math.round((1 - cv) * 100))
+})
+
+// Fetch other languages for the same slug
+const otherLanguages = ref<string[]>([])
+
+watchEffect(async () => {
+  if (!props.snippet?.slug) {
+    otherLanguages.value = []
+    return
+  }
+  try {
+    const data = await $fetch<{ catalog: { id: string, language: string, slug: string }[] }>('/api/snippets/catalog')
+    otherLanguages.value = data.catalog
+      .filter(s => s.slug === props.snippet!.slug && s.id !== props.snippet!.id)
+      .map(s => s.language)
+  } catch {
+    otherLanguages.value = []
+  }
 })
 </script>
 
@@ -347,7 +370,7 @@ const consistency = computed(() => {
       </div>
 
       <!-- ═══ Stats row (below chart) ═══ -->
-      <div class="flex items-start justify-between gap-6 mb-8 px-1">
+      <div class="flex items-start justify-between gap-6 mb-4 px-1">
         <div>
           <div
             class="text-xs mb-0.5"
@@ -359,7 +382,15 @@ const consistency = computed(() => {
             class="text-sm font-medium"
             style="color: var(--text-primary)"
           >
-            code snippet
+            {{ snippet?.title ?? 'code snippet' }}
+          </div>
+          <div
+            v-if="snippet?.category"
+            class="text-xs mt-0.5"
+            style="color: var(--text-muted)"
+          >
+            {{ snippet.category }}{{ snippet.subcategory ? ` / ${snippet.subcategory}` : '' }}
+            <span v-if="snippet.difficulty"> · {{ snippet.difficulty }}</span>
           </div>
         </div>
         <div class="text-center">
@@ -418,6 +449,62 @@ const consistency = computed(() => {
             {{ Math.round(elapsedSeconds) }}s
           </div>
         </div>
+      </div>
+
+      <!-- ═══ Tags ═══ -->
+      <div
+        v-if="snippet?.tags?.length"
+        class="flex flex-wrap gap-1.5 mb-4 px-1"
+      >
+        <span
+          v-for="tag in snippet.tags"
+          :key="tag"
+          class="text-[11px] px-2 py-0.5 rounded-full"
+          style="background: rgba(255,255,255,0.06); color: var(--text-muted)"
+        >
+          {{ tag }}
+        </span>
+      </div>
+
+      <!-- ═══ Description (collapsible) ═══ -->
+      <div
+        v-if="snippet?.description"
+        class="mb-4 px-1"
+      >
+        <button
+          class="text-xs mb-2 flex items-center gap-1"
+          style="color: var(--text-muted)"
+          @click="showDescription = !showDescription"
+        >
+          <UIcon
+            :name="showDescription ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
+            class="w-3 h-3"
+          />
+          about this snippet
+        </button>
+        <div v-if="showDescription">
+          <MarkdownDescription :content="snippet.description" />
+        </div>
+      </div>
+
+      <!-- ═══ Try in another language ═══ -->
+      <div
+        v-if="otherLanguages.length > 0"
+        class="flex items-center gap-2 mb-4 px-1"
+      >
+        <span
+          class="text-xs"
+          style="color: var(--text-muted)"
+        >try in</span>
+        <button
+          v-for="lang in otherLanguages"
+          :key="lang"
+          class="text-xs px-2 py-0.5 rounded"
+          style="color: var(--accent-primary); background: rgba(255,255,255,0.04)"
+          @click="emit('tryLanguage', lang)"
+        >
+          {{ lang === 'cpp' ? 'c++' : lang }}
+        </button>
       </div>
 
       <!-- ═══ Action footer ═══ -->

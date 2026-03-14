@@ -1,12 +1,17 @@
 <script setup lang="ts">
-const category = ref('algorithm')
-const language = ref('')
+const category = ref<string[]>([])
+const language = ref<string[]>([])
 const lineCount = ref(10)
 const mode = ref<'until-finished' | 'timed'>('until-finished')
 const timedDuration = ref<10 | 30 | 60>(30)
+const subcategory = ref('')
+const difficulty = ref('')
 
 const { indentStyle, spacesPerTab } = useSettings()
-const { snippet, loading, refresh } = useSnippet(category, language, lineCount)
+const { snippet, loading, refresh } = useSnippet(category, language, lineCount, {
+  subcategory,
+  difficulty
+})
 
 const {
   flatChars,
@@ -59,9 +64,17 @@ function onKeydown(e: KeyboardEvent) {
   handleKeydown(e)
 }
 
+function handleTryLanguage(lang: string) {
+  language.value = [lang]
+  if (snippet.value?.slug) {
+    // Refresh will use excludeId + slug matching via the composable
+  }
+  refresh()
+}
+
 onMounted(() => refresh())
 
-watch([category, language, lineCount], () => refresh())
+watch([category, language, lineCount, subcategory, difficulty], () => refresh())
 </script>
 
 <template>
@@ -77,6 +90,8 @@ watch([category, language, lineCount], () => refresh())
           v-model:line-count="lineCount"
           v-model:mode="mode"
           v-model:timed-duration="timedDuration"
+          v-model:subcategory="subcategory"
+          v-model:difficulty="difficulty"
         />
       </UContainer>
     </div>
@@ -99,8 +114,10 @@ watch([category, language, lineCount], () => refresh())
         :error-count="errorCount"
         :time-series="timeSeries"
         :error-events="errorEvents"
+        :snippet="snippet"
         @restart="reset()"
         @next="refresh()"
+        @try-language="handleTryLanguage"
       />
     </UContainer>
 

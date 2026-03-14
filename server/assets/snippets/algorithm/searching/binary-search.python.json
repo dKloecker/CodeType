@@ -1,0 +1,13 @@
+{
+  "id": "binary-search.python",
+  "slug": "binary-search",
+  "title": "Binary Search",
+  "language": "python",
+  "category": "algorithm",
+  "subcategory": "searching",
+  "tags": ["searching", "divide-and-conquer", "array"],
+  "lines": 11,
+  "difficulty": "beginner",
+  "code": "def binary_search(arr: list[int], target: int) -> int:\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1",
+  "description": "Searches a sorted array by repeatedly halving the search space. The `left + (right - left) // 2` formula avoids integer overflow. Runs in **O(log n)** time."
+}
