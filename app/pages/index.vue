@@ -38,6 +38,9 @@ const {
 
 const isActive = computed(() => startTime.value !== null)
 
+// True while the user has started but not yet finished — used to guard shortcuts
+const isTyping = computed(() => startTime.value !== null && !finished.value)
+
 const remainingSeconds = computed(() => timedDuration.value - elapsedSeconds.value)
 
 // Timed mode: force finish when time runs out
@@ -47,7 +50,8 @@ watch(elapsedSeconds, (elapsed) => {
   }
 })
 
-// Tab+Enter = new snippet, Esc = reset (handled in typing engine)
+// Tab+Enter = new snippet — kept as a manual sequence because Tab is also a
+// valid indent key inside the engine; we cannot use defineShortcuts for it.
 let tabPressed = false
 
 function onKeydown(e: KeyboardEvent) {
@@ -66,11 +70,44 @@ function onKeydown(e: KeyboardEvent) {
 
 function handleTryLanguage(lang: string) {
   language.value = [lang]
-  if (snippet.value?.slug) {
-    // Refresh will use excludeId + slug matching via the composable
-  }
   refresh()
 }
+
+// --- Shortcut handlers ---
+
+function handleRestart() {
+  reset()
+}
+
+function handleResetSession() {
+  // Clear all filters back to defaults
+  category.value = []
+  language.value = []
+  lineCount.value = 20
+  mode.value = 'until-finished'
+  timedDuration.value = 30
+  subcategory.value = ''
+  difficulty.value = ''
+  // refresh() will be triggered by the watch on the filter refs above,
+  // but we call it explicitly to be safe and immediate
+  refresh()
+}
+
+function handleClearFilters() {
+  // Clear filter state — the watch on these refs triggers refresh()
+  category.value = []
+  language.value = []
+  subcategory.value = ''
+  difficulty.value = ''
+}
+
+// Wire up defineShortcuts via the composable (r, shift_r, f)
+useAppShortcuts({
+  isTyping,
+  onRestart: handleRestart,
+  onResetSession: handleResetSession,
+  onClearFilters: handleClearFilters
+})
 
 onMounted(() => refresh())
 
@@ -133,11 +170,8 @@ watch([category, language, lineCount, subcategory, difficulty], () => refresh())
       :remaining-seconds="remainingSeconds"
     />
 
-    <footer
-      class="text-center py-3 text-xs"
-      style="color: var(--text-muted)"
-    >
-      tab + enter — restart &nbsp;&bull;&nbsp; esc — reset
+    <footer class="py-3">
+      <ShortcutsLegend />
     </footer>
   </UMain>
 </template>
