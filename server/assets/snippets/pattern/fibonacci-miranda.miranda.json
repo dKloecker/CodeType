@@ -1,0 +1,12 @@
+{
+  "id": "fibonacci-miranda.miranda",
+  "slug": "fibonacci-miranda",
+  "title": "Fibonacci with Zip",
+  "language": "miranda",
+  "category": "pattern",
+  "tags": ["lazy-evaluation", "recursion", "memoization"],
+  "lines": 10,
+  "difficulty": "beginner",
+  "code": "fib :: num -> num\nfib 0 = 0\nfib 1 = 1\nfib n = fib (n - 1) + fib (n - 2)\n\nfibs :: [num]\nfibs = map fib [0..]\n\nfirst_ten :: [num]\nfirst_ten = take 10 fibs",
+  "description": "Fibonacci defined both as a recursive function and as a lazy infinite list using `map` over `[0..]`. Miranda's lazy evaluation means `fibs` is only computed as far as needed by `take`."
+}

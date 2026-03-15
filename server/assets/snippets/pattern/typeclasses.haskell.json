@@ -1,0 +1,16 @@
+{
+  "id": "typeclasses.haskell",
+  "slug": "typeclasses",
+  "title": "Custom Typeclass",
+  "language": "haskell",
+  "category": "pattern",
+  "tags": [
+    "type-system",
+    "generics",
+    "higher-order"
+  ],
+  "lines": 19,
+  "difficulty": "intermediate",
+  "code": "class Describable a where\n  describe :: a -> String\n\ndata Shape\n  = Circle Double\n  | Rectangle Double Double\n  deriving (Show)\n\ninstance Describable Shape where\n  describe (Circle r) =\n    \"Circle with radius \" ++ show r\n  describe (Rectangle w h) =\n    \"Rectangle \" ++ show w ++ \" x \" ++ show h\n\ninstance Describable Int where\n  describe n = \"The integer \" ++ show n\n\nmain :: IO ()\nmain = mapM_ (putStrLn . describe) [Circle 5.0, Rectangle 3.0 4.0]",
+  "description": "Defines a `Describable` typeclass with a single method, then provides instances for `Shape` and `Int`. Typeclasses enable ad-hoc polymorphism — similar to interfaces but resolved at compile time via dictionary passing."
+}

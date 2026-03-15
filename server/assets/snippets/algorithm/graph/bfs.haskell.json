@@ -1,0 +1,13 @@
+{
+  "id": "bfs.haskell",
+  "slug": "bfs",
+  "title": "Breadth-First Search",
+  "language": "haskell",
+  "category": "algorithm",
+  "subcategory": "graph",
+  "tags": ["graph", "traversal", "queue"],
+  "lines": 16,
+  "difficulty": "intermediate",
+  "code": "import qualified Data.Map.Strict as Map\nimport qualified Data.Set as Set\nimport qualified Data.Sequence as Seq\n\ntype Graph a = Map.Map a [a]\n\nbfs :: Ord a => Graph a -> a -> [a]\nbfs graph start = go (Seq.singleton start) Set.empty []\n  where\n    go Seq.Empty _ acc = reverse acc\n    go (node Seq.:<| rest) visited acc\n      | Set.member node visited = go rest visited acc\n      | otherwise =\n          let visited' = Set.insert node visited\n              neighbors = filter (`Set.notMember` visited') (Map.findWithDefault [] node graph)\n          in go (rest Seq.>< Seq.fromList neighbors) visited' (node : acc)",
+  "description": "BFS using a `Data.Sequence` as a FIFO queue and a `Set` for visited tracking. The graph is represented as an adjacency map. Demonstrates Haskell's persistent data structures for queue operations."
+}

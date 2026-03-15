@@ -1,0 +1,13 @@
+{
+  "id": "binary-search.ocaml",
+  "slug": "binary-search",
+  "title": "Binary Search",
+  "language": "ocaml",
+  "category": "algorithm",
+  "subcategory": "searching",
+  "tags": ["searching", "recursion", "array"],
+  "lines": 10,
+  "difficulty": "beginner",
+  "code": "let binary_search arr target =\n  let rec go lo hi =\n    if lo > hi then None\n    else\n      let mid = (lo + hi) / 2 in\n      if arr.(mid) = target then Some mid\n      else if arr.(mid) < target then go (mid + 1) hi\n      else go lo (mid - 1)\n  in\n  go 0 (Array.length arr - 1)",
+  "description": "Binary search over an `array` using a recursive inner function. Returns `option int` — `Some index` on match, `None` on miss. Array indexing with `arr.(mid)` gives O(1) access."
+}

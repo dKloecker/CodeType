@@ -1,0 +1,17 @@
+{
+  "id": "merge-sort.miranda",
+  "slug": "merge-sort",
+  "title": "Merge Sort",
+  "language": "miranda",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": [
+    "sorting",
+    "divide-and-conquer",
+    "recursion"
+  ],
+  "lines": 14,
+  "difficulty": "intermediate",
+  "code": "mergesort :: [num] -> [num]\nmergesort []  = []\nmergesort [x] = [x]\nmergesort xs  = merge (mergesort left) (mergesort right)\n                where\n                left  = take half xs\n                right = drop half xs\n                half  = #xs div 2\n\nmerge :: [num] -> [num] -> [num]\nmerge [] ys         = ys\nmerge xs []         = xs\nmerge (x:xs) (y:ys) = x : merge xs (y:ys), if x <= y\n                    = y : merge (x:xs) ys, otherwise",
+  "description": "Miranda merge sort using guarded equations (`if`/`otherwise` on the right-hand side). The `#` operator gives list length, and `take`/`drop` split at the midpoint. Miranda's `where` clauses bind local definitions."
+}

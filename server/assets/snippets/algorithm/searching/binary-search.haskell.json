@@ -1,0 +1,17 @@
+{
+  "id": "binary-search.haskell",
+  "slug": "binary-search",
+  "title": "Binary Search",
+  "language": "haskell",
+  "category": "algorithm",
+  "subcategory": "searching",
+  "tags": [
+    "searching",
+    "recursion",
+    "array"
+  ],
+  "lines": 12,
+  "difficulty": "beginner",
+  "code": "import Data.Vector (Vector, (!))\nimport qualified Data.Vector as V\n\nbinarySearch :: Ord a => Vector a -> a -> Maybe Int\nbinarySearch vec target = go 0 (V.length vec - 1)\n  where\n    go lo hi\n      | lo > hi        = Nothing\n      | vec ! mid == target = Just mid\n      | vec ! mid < target  = go (mid + 1) hi\n      | otherwise            = go lo (mid - 1)\n      where mid = (lo + hi) `div` 2",
+  "description": "Binary search over an immutable `Vector` using a recursive helper with guards. Returns `Maybe Int` — `Just` the index on hit, `Nothing` on miss. Uses `Data.Vector` for O(1) indexing."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "recursive-types.ocaml",
+  "slug": "recursive-types",
+  "title": "Binary Search Tree",
+  "language": "ocaml",
+  "category": "pattern",
+  "tags": [
+    "data-structure",
+    "recursion",
+    "functional"
+  ],
+  "lines": 18,
+  "difficulty": "intermediate",
+  "code": "type 'a tree =\n  | Leaf\n  | Node of 'a tree * 'a * 'a tree\n\nlet rec insert x = function\n  | Leaf -> Node (Leaf, x, Leaf)\n  | Node (l, v, r) ->\n    if x < v then Node (insert x l, v, r)\n    else if x > v then Node (l, v, insert x r)\n    else Node (l, v, r)\n\nlet rec to_sorted_list = function\n  | Leaf -> []\n  | Node (l, v, r) -> to_sorted_list l @ [v] @ to_sorted_list r\n\nlet () =\n  let tree = List.fold_left (fun t x -> insert x t) Leaf [5; 3; 7; 1; 4] in\n  List.iter (Printf.printf \"%d \") (to_sorted_list tree)",
+  "description": "A polymorphic binary search tree with `insert` and in-order traversal. The `'a tree` type uses algebraic data types with `Leaf` and `Node` constructors. `List.fold_left` builds the tree from a list of values."
+}

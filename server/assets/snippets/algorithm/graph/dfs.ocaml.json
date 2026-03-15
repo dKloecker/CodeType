@@ -1,0 +1,18 @@
+{
+  "id": "dfs.ocaml",
+  "slug": "dfs",
+  "title": "Depth-First Search",
+  "language": "ocaml",
+  "category": "algorithm",
+  "subcategory": "graph",
+  "tags": [
+    "graph",
+    "traversal",
+    "dfs",
+    "recursion"
+  ],
+  "lines": 15,
+  "difficulty": "intermediate",
+  "code": "module IntSet = Set.Make(Int)\nmodule IntMap = Map.Make(Int)\n\ntype graph = int list IntMap.t\n\nlet dfs (g : graph) (start : int) : int list =\n  let rec go node visited acc =\n    if IntSet.mem node visited then (visited, acc)\n    else\n      let visited = IntSet.add node visited in\n      let neighbors = IntMap.find_opt node g |> Option.value ~default:[] in\n      let visited, acc = List.fold_left (fun (v, a) n -> go n v a) (visited, node :: acc) neighbors in\n      (visited, acc)\n  in\n  snd (go start IntSet.empty []) |> List.rev",
+  "description": "DFS using OCaml's functorized `Set` and `Map` modules. The recursive helper threads visited state through pure values — no mutation needed. `List.fold_left` iterates neighbors, accumulating both the visited set and the result."
+}

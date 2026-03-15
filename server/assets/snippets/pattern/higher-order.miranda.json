@@ -1,0 +1,16 @@
+{
+  "id": "higher-order.miranda",
+  "slug": "higher-order",
+  "title": "Higher-Order Functions",
+  "language": "miranda",
+  "category": "pattern",
+  "tags": [
+    "higher-order",
+    "functional",
+    "list-comprehension"
+  ],
+  "lines": 15,
+  "difficulty": "beginner",
+  "code": "twice :: (* -> *) -> * -> *\ntwice f x = f (f x)\n\ncompose :: (* -> **) -> (*** -> *) -> *** -> **\ncompose f g x = f (g x)\n\nmy_map :: (* -> **) -> [*] -> [**]\nmy_map f xs = [f x | x <- xs]\n\nmy_filter :: (* -> bool) -> [*] -> [*]\nmy_filter p xs = [x | x <- xs; p x]\n\nmy_foldr :: (* -> ** -> **) -> ** -> [*] -> **\nmy_foldr f z []     = z\nmy_foldr f z (x:xs) = f x (my_foldr f z xs)",
+  "description": "Core higher-order functions implemented from scratch in Miranda. Uses `*`, `**`, `***` as distinct type variables. `my_map` and `my_filter` are defined with list comprehensions, while `my_foldr` uses pattern matching."
+}

@@ -7,7 +7,10 @@ export const languageOptions: SelectorOption[] = [
   { value: '', label: 'all' },
   { value: 'python', label: 'python' },
   { value: 'typescript', label: 'typescript' },
-  { value: 'cpp', label: 'c++' }
+  { value: 'cpp', label: 'c++' },
+  { value: 'haskell', label: 'haskell' },
+  { value: 'miranda', label: 'miranda' },
+  { value: 'ocaml', label: 'ocaml' }
 ]
 
 export const categoryOptions: SelectorOption[] = [

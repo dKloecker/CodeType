@@ -1,0 +1,13 @@
+{
+  "id": "quicksort.haskell",
+  "slug": "quicksort",
+  "title": "Quicksort",
+  "language": "haskell",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": ["sorting", "recursion", "list-comprehension"],
+  "lines": 5,
+  "difficulty": "beginner",
+  "code": "quicksort :: Ord a => [a] -> [a]\nquicksort [] = []\nquicksort (x:xs) =\n  quicksort [y | y <- xs, y <= x]\n  ++ [x] ++ quicksort [y | y <- xs, y > x]",
+  "description": "The canonical Haskell quicksort — often the first example shown to newcomers. Uses list comprehensions to partition around a pivot. Elegant but not in-place; allocates new lists at each level."
+}

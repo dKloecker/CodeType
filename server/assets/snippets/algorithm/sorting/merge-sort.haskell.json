@@ -1,0 +1,17 @@
+{
+  "id": "merge-sort.haskell",
+  "slug": "merge-sort",
+  "title": "Merge Sort",
+  "language": "haskell",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": [
+    "sorting",
+    "divide-and-conquer",
+    "recursion"
+  ],
+  "lines": 13,
+  "difficulty": "intermediate",
+  "code": "mergeSort :: Ord a => [a] -> [a]\nmergeSort [] = []\nmergeSort [x] = [x]\nmergeSort xs = merge (mergeSort left) (mergeSort right)\n  where\n    (left, right) = splitAt (length xs `div` 2) xs\n\nmerge :: Ord a => [a] -> [a] -> [a]\nmerge [] ys = ys\nmerge xs [] = xs\nmerge (x:xs) (y:ys)\n  | x <= y    = x : merge xs (y:ys)\n  | otherwise = y : merge (x:xs) ys",
+  "description": "Classic merge sort using pattern matching and guards. Splits the list at the midpoint with `splitAt`, recursively sorts both halves, then merges with element-wise comparison. Showcases Haskell's declarative style — no mutable state needed."
+}

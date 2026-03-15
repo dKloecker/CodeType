@@ -1,0 +1,16 @@
+{
+  "id": "algebraic-types.miranda",
+  "slug": "algebraic-types",
+  "title": "Algebraic Data Types",
+  "language": "miranda",
+  "category": "pattern",
+  "tags": [
+    "type-system",
+    "data-structure",
+    "functional"
+  ],
+  "lines": 15,
+  "difficulty": "intermediate",
+  "code": "tree * ::= Leaf * | Node (tree *) * (tree *)\n\ninsert :: * -> tree * -> tree *\ninsert x (Leaf _)       = error \"cannot insert into leaf\"\ninsert x (Node l v r)   = Node (insert x l) v r, if x < v\n                        = Node l v (insert x r), if x > v\n                        = Node l v r, otherwise\n\nflatten :: tree * -> [*]\nflatten (Leaf x)      = [x]\nflatten (Node l v r)  = flatten l ++ [v] ++ flatten r\n\nmktree :: [*] -> tree *\nmktree [x]    = Leaf x\nmktree (x:xs) = foldr insert (Leaf x) xs",
+  "description": "Defines a polymorphic binary tree using Miranda's algebraic type syntax (`::=`). The `*` acts as a type variable. Uses guarded equations for ordered insertion and `flatten` for in-order traversal."
+}

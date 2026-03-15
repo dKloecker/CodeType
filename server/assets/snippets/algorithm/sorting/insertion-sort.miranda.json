@@ -1,0 +1,13 @@
+{
+  "id": "insertion-sort.miranda",
+  "slug": "insertion-sort",
+  "title": "Insertion Sort",
+  "language": "miranda",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": ["sorting", "recursion"],
+  "lines": 8,
+  "difficulty": "beginner",
+  "code": "isort :: [num] -> [num]\nisort []     = []\nisort (x:xs) = insert x (isort xs)\n\ninsert :: num -> [num] -> [num]\ninsert x []     = [x]\ninsert x (y:ys) = x : y : ys, if x <= y\n                = y : insert x ys, otherwise",
+  "description": "Insertion sort in Miranda using guarded right-hand sides. Each element is inserted into its correct position in the already-sorted tail. Clean and readable — showcases Miranda's equation-based function definitions."
+}

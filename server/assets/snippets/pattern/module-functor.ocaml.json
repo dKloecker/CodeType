@@ -1,0 +1,16 @@
+{
+  "id": "module-functor.ocaml",
+  "slug": "module-functor",
+  "title": "Module Functor",
+  "language": "ocaml",
+  "category": "pattern",
+  "tags": [
+    "type-system",
+    "generics",
+    "design-pattern"
+  ],
+  "lines": 19,
+  "difficulty": "advanced",
+  "code": "module type Printable = sig\n  type t\n  val to_string : t -> string\nend\n\nmodule MakeLogger (P : Printable) = struct\n  let log prefix value =\n    Printf.printf \"[%s] %s\\n\" prefix (P.to_string value)\n\n  let log_list prefix values =\n    List.iter (log prefix) values\nend\n\nmodule IntLogger = MakeLogger (struct\n  type t = int\n  let to_string = string_of_int\nend)\n\nlet () = IntLogger.log_list \"INFO\" [1; 2; 3]",
+  "description": "Demonstrates OCaml's module functors — parameterized modules that take other modules as arguments. `MakeLogger` accepts any module satisfying `Printable` and produces a specialized logger. A powerful alternative to typeclasses for abstraction."
+}

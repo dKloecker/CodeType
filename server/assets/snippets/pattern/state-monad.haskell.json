@@ -1,0 +1,16 @@
+{
+  "id": "state-monad.haskell",
+  "slug": "state-monad",
+  "title": "State Monad Counter",
+  "language": "haskell",
+  "category": "pattern",
+  "tags": [
+    "functional",
+    "higher-order",
+    "design-pattern"
+  ],
+  "lines": 18,
+  "difficulty": "advanced",
+  "code": "import Control.Monad.State\n\ntype Counter = State Int\n\nincrement :: Counter ()\nincrement = modify (+1)\n\ndecrement :: Counter ()\ndecrement = modify (subtract 1)\n\ngetCount :: Counter Int\ngetCount = get\n\nprogram :: Counter Int\nprogram = increment >> increment >> increment >> decrement >> getCount\n\nmain :: IO ()\nmain = print (evalState program 0)",
+  "description": "Threads mutable state through pure functions using the `State` monad. `modify`, `get`, and `>>` compose stateful operations without any `IORef` or side effects. The final `evalState` runs the computation from an initial value."
+}

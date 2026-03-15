@@ -1,0 +1,12 @@
+{
+  "id": "gadt-expr.ocaml",
+  "slug": "gadt-expr",
+  "title": "GADT Expression Evaluator",
+  "language": "ocaml",
+  "category": "pattern",
+  "tags": ["type-system", "generics", "functional"],
+  "lines": 15,
+  "difficulty": "advanced",
+  "code": "type _ expr =\n  | Int : int -> int expr\n  | Bool : bool -> bool expr\n  | Add : int expr * int expr -> int expr\n  | If : bool expr * 'a expr * 'a expr -> 'a expr\n  | Eq : int expr * int expr -> bool expr\n\nlet rec eval : type a. a expr -> a = function\n  | Int n -> n\n  | Bool b -> b\n  | Add (x, y) -> eval x + eval y\n  | If (cond, t, f) -> if eval cond then eval t else eval f\n  | Eq (x, y) -> eval x = eval y\n\nlet () = Printf.printf \"%d\\n\" (eval (If (Eq (Int 1, Int 1), Add (Int 2, Int 3), Int 0)))",
+  "description": "A type-safe expression evaluator using Generalized Algebraic Data Types (GADTs). The type index on `expr` guarantees that `eval` returns `int` for `Add` and `bool` for `Eq` — ill-typed expressions are rejected at compile time."
+}

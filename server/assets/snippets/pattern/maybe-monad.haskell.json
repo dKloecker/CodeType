@@ -1,0 +1,16 @@
+{
+  "id": "maybe-monad.haskell",
+  "slug": "maybe-monad",
+  "title": "Maybe Monad Pipeline",
+  "language": "haskell",
+  "category": "pattern",
+  "tags": [
+    "functional",
+    "error-handling",
+    "higher-order"
+  ],
+  "lines": 16,
+  "difficulty": "intermediate",
+  "code": "safeDivide :: Double -> Double -> Maybe Double\nsafeDivide _ 0 = Nothing\nsafeDivide x y = Just (x / y)\n\nsafeHead :: [a] -> Maybe a\nsafeHead []    = Nothing\nsafeHead (x:_) = Just x\n\ncompute :: [Double] -> Double -> Maybe Double\ncompute xs divisor = do\n  first <- safeHead xs\n  half  <- safeDivide first 2.0\n  safeDivide half divisor\n\nmain :: IO ()\nmain = print (compute [10, 20, 30] 3.0)",
+  "description": "Chains partial functions with `do` notation over the `Maybe` monad. Each step can short-circuit to `Nothing` without explicit checks. Shows how monadic bind (`>>=`) threads failure through a pipeline."
+}

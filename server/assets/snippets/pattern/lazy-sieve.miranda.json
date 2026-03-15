@@ -1,0 +1,16 @@
+{
+  "id": "lazy-sieve.miranda",
+  "slug": "lazy-sieve",
+  "title": "Sieve of Eratosthenes",
+  "language": "miranda",
+  "category": "pattern",
+  "tags": [
+    "lazy-evaluation",
+    "recursion",
+    "math"
+  ],
+  "lines": 8,
+  "difficulty": "intermediate",
+  "code": "primes :: [num]\nprimes = sieve [2..]\n\nsieve :: [num] -> [num]\nsieve (p:xs) = p : sieve [x | x <- xs; x mod p ~= 0]\n\nfirst_n_primes :: num -> [num]\nfirst_n_primes n = take n primes",
+  "description": "The Sieve of Eratosthenes as a lazy infinite list. Miranda's `[2..]` generates naturals from 2, and list comprehensions with `;` for guards filter out multiples. Lazy evaluation ensures only requested primes are computed."
+}

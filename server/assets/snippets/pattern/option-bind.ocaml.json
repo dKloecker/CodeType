@@ -1,0 +1,16 @@
+{
+  "id": "option-bind.ocaml",
+  "slug": "option-bind",
+  "title": "Option Bind Pipeline",
+  "language": "ocaml",
+  "category": "pattern",
+  "tags": [
+    "functional",
+    "error-handling",
+    "higher-order"
+  ],
+  "lines": 14,
+  "difficulty": "beginner",
+  "code": "let safe_divide x = function\n  | 0.0 -> None\n  | y -> Some (x /. y)\n\nlet safe_head = function\n  | [] -> None\n  | x :: _ -> Some x\n\nlet compute xs divisor =\n  safe_head xs\n  |> Option.bind (fun first -> safe_divide first 2.0)\n  |> Option.bind (fun half -> safe_divide half divisor)\n\nlet () = Printf.printf \"%s\\n\" (match compute [10.0; 20.0] 3.0 with Some v -> string_of_float v | None -> \"none\")",
+  "description": "Chains partial functions using `Option.bind` and the pipe operator `|>`. Each step can return `None` to short-circuit the pipeline. Equivalent to Haskell's `Maybe` monad but using OCaml's standard library."
+}

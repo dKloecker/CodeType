@@ -1,0 +1,13 @@
+{
+  "id": "merge-sort.ocaml",
+  "slug": "merge-sort",
+  "title": "Merge Sort",
+  "language": "ocaml",
+  "category": "algorithm",
+  "subcategory": "sorting",
+  "tags": ["sorting", "divide-and-conquer", "recursion"],
+  "lines": 17,
+  "difficulty": "intermediate",
+  "code": "let rec merge_sort = function\n  | [] -> []\n  | [x] -> [x]\n  | xs ->\n    let mid = List.length xs / 2 in\n    let left, right = List.filteri (fun i _ -> i < mid) xs,\n                      List.filteri (fun i _ -> i >= mid) xs in\n    merge (merge_sort left) (merge_sort right)\n\nand merge l1 l2 =\n  match l1, l2 with\n  | [], ys -> ys\n  | xs, [] -> xs\n  | x :: xs, y :: ys ->\n    if x <= y\n    then x :: merge xs (y :: ys)\n    else y :: merge (x :: xs) ys",
+  "description": "Recursive merge sort using `function` for direct pattern matching on the argument. `List.filteri` splits at the midpoint, and a mutually recursive `merge` combines sorted halves. Idiomatic OCaml with `and` for mutual recursion."
+}

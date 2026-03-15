@@ -1,0 +1,12 @@
+{
+  "id": "fibonacci-lazy.haskell",
+  "slug": "fibonacci-lazy",
+  "title": "Lazy Fibonacci Stream",
+  "language": "haskell",
+  "category": "pattern",
+  "tags": ["lazy-evaluation", "recursion", "memoization"],
+  "lines": 8,
+  "difficulty": "beginner",
+  "code": "fibs :: [Integer]\nfibs = 0 : 1 : zipWith (+) fibs (tail fibs)\n\ntakeWhileUnder :: Integer -> [Integer]\ntakeWhileUnder limit = takeWhile (< limit) fibs\n\nmain :: IO ()\nmain = print (takeWhileUnder 1000)",
+  "description": "Defines the Fibonacci sequence as a self-referential infinite list. `zipWith (+)` pairs each element with the next, and laziness ensures only needed values are computed. A classic demonstration of Haskell's lazy evaluation."
+}
