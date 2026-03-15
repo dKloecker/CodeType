@@ -50,21 +50,10 @@ watch(elapsedSeconds, (elapsed) => {
   }
 })
 
-// Tab+Enter = new snippet — kept as a manual sequence because Tab is also a
-// valid indent key inside the engine; we cannot use defineShortcuts for it.
-let tabPressed = false
+const { handle: handleTabEnter } = useTabEnterShortcut(() => refresh())
 
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Tab') {
-    tabPressed = true
-  } else if (e.key === 'Enter' && tabPressed) {
-    e.preventDefault()
-    tabPressed = false
-    refresh()
-    return
-  } else {
-    tabPressed = false
-  }
+  if (handleTabEnter(e)) return
   handleKeydown(e)
 }
 
@@ -74,10 +63,6 @@ function handleTryLanguage(lang: string) {
 }
 
 // --- Shortcut handlers ---
-
-function handleRestart() {
-  reset()
-}
 
 function handleResetSession() {
   // Clear all filters back to defaults
@@ -104,7 +89,7 @@ function handleClearFilters() {
 // Wire up defineShortcuts via the composable (r, shift_r, f)
 useAppShortcuts({
   isTyping,
-  onRestart: handleRestart,
+  onRestart: reset,
   onResetSession: handleResetSession,
   onClearFilters: handleClearFilters
 })
@@ -156,6 +141,7 @@ watch([category, language, lineCount, subcategory, difficulty], () => refresh())
         @restart="reset()"
         @next="refresh()"
         @try-language="handleTryLanguage"
+        @close="finished = false"
       />
     </UContainer>
 

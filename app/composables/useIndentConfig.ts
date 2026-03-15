@@ -1,11 +1,6 @@
-const STORAGE_KEY = 'codetype-indent-config'
-
-type IndentStyle = 'tabs' | 'spaces'
-type SpacesPerTab = 2 | 4
-
 interface IndentConfig {
-  indentStyle: IndentStyle
-  spacesPerTab: SpacesPerTab
+  indentStyle: 'tabs' | 'spaces'
+  spacesPerTab: 2 | 4
 }
 
 export function normalizeIndentation(code: string, config: IndentConfig): string {
@@ -33,40 +28,4 @@ export function normalizeIndentation(code: string, config: IndentConfig): string
 
     return indent + rest
   }).join('\n')
-}
-
-export function useIndentConfig() {
-  const indentStyle = ref<IndentStyle>('spaces')
-  const spacesPerTab = ref<SpacesPerTab>(4)
-
-  if (import.meta.client) {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored) as IndentConfig
-        if (parsed.indentStyle === 'tabs' || parsed.indentStyle === 'spaces') {
-          indentStyle.value = parsed.indentStyle
-        }
-        if (parsed.spacesPerTab === 2 || parsed.spacesPerTab === 4) {
-          spacesPerTab.value = parsed.spacesPerTab
-        }
-      }
-    } catch {
-      // Ignore invalid stored data
-    }
-  }
-
-  watch([indentStyle, spacesPerTab], () => {
-    if (import.meta.client) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        indentStyle: indentStyle.value,
-        spacesPerTab: spacesPerTab.value
-      }))
-    }
-  })
-
-  return {
-    indentStyle,
-    spacesPerTab
-  }
 }

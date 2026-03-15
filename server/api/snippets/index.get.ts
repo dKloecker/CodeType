@@ -1,4 +1,3 @@
-import type { Snippet } from '~~/server/types/snippet'
 import { loadAllSnippets } from '~~/server/utils/snippets'
 
 export default defineEventHandler(async (event) => {
@@ -19,30 +18,30 @@ export default defineEventHandler(async (event) => {
   }
 
   if (category) {
-    const cats = category.split(',')
+    const cats = category.split(',').map(s => s.trim()).filter(Boolean)
     snippets = snippets.filter(s => cats.includes(s.category))
   }
 
   if (language) {
-    const langs = language.split(',')
+    const langs = language.split(',').map(s => s.trim()).filter(Boolean)
     snippets = snippets.filter(s => langs.includes(s.language))
   }
 
   if (subcategory) {
-    snippets = snippets.filter(s => s.subcategory === subcategory)
+    snippets = snippets.filter(s => s.subcategory === subcategory.trim())
   }
 
   if (tags) {
-    const tagList = tags.split(',')
+    const tagList = tags.split(',').map(s => s.trim()).filter(Boolean)
     snippets = snippets.filter(s => s.tags.some(t => tagList.includes(t)))
   }
 
-  if (maxLines) {
+  if (maxLines && maxLines > 0) {
     snippets = snippets.filter(s => s.lines <= maxLines)
   }
 
   if (difficulty) {
-    snippets = snippets.filter(s => s.difficulty === difficulty)
+    snippets = snippets.filter(s => s.difficulty === difficulty.trim())
   }
 
   if (excludeId) {
@@ -54,5 +53,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const randomIndex = Math.floor(Math.random() * snippets.length)
-  return { snippet: snippets[randomIndex] as Snippet }
+  return { snippet: snippets[randomIndex] }
 })

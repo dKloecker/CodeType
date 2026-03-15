@@ -40,19 +40,17 @@ watch(() => props.cursorIndex, () => {
 })
 
 // Group chars into lines for rendering
-function getLines(chars: CharState[]): CharState[][] {
-  const lines: CharState[][] = [[]]
-  for (const ch of chars) {
-    const currentLine = lines[lines.length - 1]!
+const lines = computed(() => {
+  const result: CharState[][] = [[]]
+  for (const ch of props.flatChars) {
+    const currentLine = result[result.length - 1]!
+    currentLine.push(ch)
     if (ch.isNewline) {
-      currentLine.push(ch)
-      lines.push([])
-    } else {
-      currentLine.push(ch)
+      result.push([])
     }
   }
-  return lines
-}
+  return result
+})
 
 function charClass(ch: CharState): string {
   const base = 'char-' + ch.status
@@ -125,7 +123,7 @@ const snippetCssVars = computed(() => ({
         class="leading-[1.8] text-[1.1rem] whitespace-pre-wrap outline-none pl-1"
         :style="{ fontFamily: codeFontFamily }"
       ><template
-v-for="(line, lineIdx) in getLines(flatChars)"
+v-for="(line, lineIdx) in lines"
 :key="lineIdx"
 ><template
 v-for="ch in line"

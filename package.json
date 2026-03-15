@@ -20,6 +20,8 @@
     "@iconify-json/simple-icons": "^1.2.72",
     "@nuxt/content": "^3.12.0",
     "@nuxt/ui": "^4.5.1",
+    "@unovis/ts": "^1.6.4",
+    "@unovis/vue": "^1.6.4",
     "nuxt": "^4.3.1",
     "shiki": "^4.0.2",
     "tailwindcss": "^4.2.1"
@@ -35,6 +37,8 @@
   },
   "packageManager": "pnpm@10.30.3",
   "pnpm": {
-    "onlyBuiltDependencies": ["better-sqlite3"]
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

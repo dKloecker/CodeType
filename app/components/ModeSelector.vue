@@ -28,24 +28,10 @@ function isOpen(key: SectionKey) {
   return openSection.value === key
 }
 
-function selectLanguage(value: string) {
-  if (value === '') {
-    language.value = []
-  } else if (language.value.includes(value)) {
-    language.value = language.value.filter(v => v !== value)
-  } else {
-    language.value = [...language.value, value]
-  }
-}
-
-function selectCategory(value: string) {
-  if (value === '') {
-    category.value = []
-  } else if (category.value.includes(value)) {
-    category.value = category.value.filter(v => v !== value)
-  } else {
-    category.value = [...category.value, value]
-  }
+function toggleMultiSelect(arr: string[], value: string): string[] {
+  if (value === '') return []
+  if (arr.includes(value)) return arr.filter(v => v !== value)
+  return [...arr, value]
 }
 
 function isMultiSelected(arr: string[], value: string) {
@@ -130,7 +116,7 @@ onUnmounted(() => document.removeEventListener('click', closeAll))
             :key="opt.value"
             class="pill-option"
             :style="{ color: isMultiSelected(language, opt.value) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-            @click="selectLanguage(opt.value)"
+            @click="language = toggleMultiSelect(language, opt.value)"
           >
             {{ opt.label }}
           </button>
@@ -163,7 +149,7 @@ onUnmounted(() => document.removeEventListener('click', closeAll))
             :key="opt.value"
             class="pill-option"
             :style="{ color: isMultiSelected(category, opt.value) ? 'var(--accent-primary)' : 'var(--text-muted)' }"
-            @click="selectCategory(opt.value)"
+            @click="category = toggleMultiSelect(category, opt.value)"
           >
             {{ opt.label }}
           </button>
